@@ -262,19 +262,109 @@ td input, td select, td textarea { min-height: 32px; padding: 5px 7px; border-ra
 .crop-card { display: none; }
 .crop-card.active-crop { display: block; }
 
-.hidden { display: none !important; }
-@media (max-width: 760px) {
+
+/* Iframe-friendly stacked IPM entry layout */
+@media (max-width: 920px) {
   .page { padding: 6px; }
-  .input-grid, .summary-grid, .crop-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .crop-head { grid-template-columns: 1fr 1fr; }
-  .crop-page-top { grid-template-columns: 1fr; }
-  .crop-page-controls { justify-content: space-between; }
-  .remove-crop { grid-column: 1 / -1; justify-self: start; }
+  .card, .crop-card, .crop-page-shell { border-radius: 12px; padding: 10px; }
+  .card-title, .section-title { gap: 8px; margin-bottom: 8px; }
+  .input-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+  .compact-summary { padding: 8px; }
+  .compact-summary .summary-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .summary-grid { gap: 5px; }
+  .metric { padding: 6px 7px; }
+  .crop-page-top { grid-template-columns: 1fr; gap: 8px; }
+  .crop-page-controls { width: 100%; justify-content: space-between; }
+  .crop-tabs { padding-bottom: 4px; }
+  .crop-head {
+    grid-template-columns: 1fr;
+    gap: 8px;
+    margin: -10px -10px 8px;
+    padding: 10px;
+  }
+  .remove-crop { width: 100%; }
+  .crop-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; }
+  .stat { padding: 7px; }
+  .stat .value { font-size: 14px; }
+  .table-wrap {
+    overflow: visible;
+    border: 0;
+    border-radius: 0;
+  }
+  table,
+  thead,
+  tbody,
+  tr,
+  th,
+  td {
+    display: block;
+    width: 100%;
+  }
+  table { min-width: 0; border-spacing: 0; }
+  thead { display: none; }
+  .ipm-row {
+    border: 1px solid var(--sci-line);
+    border-radius: 12px;
+    background: #fff;
+    padding: 8px;
+    margin-bottom: 8px;
+    box-shadow: 0 1px 0 rgba(61,47,30,.03);
+  }
+  td {
+    border-bottom: 0;
+    padding: 5px 0;
+    background: transparent !important;
+  }
+  td::before {
+    content: attr(data-label);
+    display: block;
+    color: var(--sci-muted);
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    margin-bottom: 3px;
+  }
+  td input,
+  td select,
+  td textarea {
+    min-height: 36px;
+    width: 100%;
+  }
+  td.readonly {
+    border: 1px solid #EFE7D7;
+    border-radius: 9px;
+    padding: 7px 9px;
+    background: #FDFBF7 !important;
+  }
+  td.readonly::before { margin-bottom: 2px; }
+  td:last-child::before { display: none; }
+  td:last-child { padding-top: 7px; }
+  .remove-ipm { width: 100%; }
+  .crop-actions .btn { width: 100%; }
+  .actions .btn { flex: 1 1 auto; }
 }
-@media (max-width: 480px) {
-  .input-grid, .summary-grid, .crop-stats, .crop-head { grid-template-columns: 1fr; }
-  .card-title, .section-title { flex-direction: column; }
+
+@media (max-width: 520px) {
+  html, body { font-size: 12.5px; }
+  .input-grid,
+  .summary-grid,
+  .compact-summary .summary-grid,
+  .crop-stats {
+    grid-template-columns: 1fr;
+  }
+  .card-title,
+  .section-title {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .actions { width: 100%; }
+  .actions .btn { width: 100%; }
+  .crop-mini-summary { gap: 4px; }
+  .crop-mini-pill { width: 100%; text-align: center; }
 }
+
+.hidden { display: none !important; }
 </style>
 </head>
 <body>
@@ -363,16 +453,16 @@ td input, td select, td textarea { min-height: 32px; padding: 5px 7px; border-ra
 
 <template id="ipmTemplate">
   <tr class="ipm-row">
-    <td><input class="application-date" type="date" /></td>
-    <td><input class="pest" placeholder="Grass, broadleaf, insect..." /></td>
-    <td><input class="product-name" placeholder="Product name" /></td>
-    <td><select class="product-unit"><option>Fluid oz</option><option>Pints</option><option>Quarts</option><option>Gallons</option><option>oz</option><option>lbs</option><option>Tons</option></select></td>
-    <td><input class="amount-acre" type="number" min="0" step="0.001" placeholder="0" /></td>
-    <td><input class="active-pct" type="number" min="0" max="100" step="0.01" placeholder="0" /></td>
-    <td class="readonly ai-acre">0.00</td>
-    <td class="readonly ai-total">0.00</td>
-    <td><input class="notes" placeholder="Optional" /></td>
-    <td><button class="btn danger remove-ipm" type="button">×</button></td>
+    <td data-label="Application Date"><input class="application-date" type="date" /></td>
+    <td data-label="Weed or Pest"><input class="pest" placeholder="Grass, broadleaf, insect..." /></td>
+    <td data-label="Product Name"><input class="product-name" placeholder="Product name" /></td>
+    <td data-label="Unit"><select class="product-unit"><option>Fluid oz</option><option>Pints</option><option>Quarts</option><option>Gallons</option><option>oz</option><option>lbs</option><option>Tons</option></select></td>
+    <td data-label="Amount / Acre"><input class="amount-acre" type="number" min="0" step="0.001" placeholder="0" /></td>
+    <td data-label="% Active Ingredient"><input class="active-pct" type="number" min="0" max="100" step="0.01" placeholder="0" /></td>
+    <td data-label="Active Ingredient / Acre" class="readonly ai-acre">0.00</td>
+    <td data-label="Total Active Ingredient" class="readonly ai-total">0.00</td>
+    <td data-label="Notes"><input class="notes" placeholder="Optional" /></td>
+    <td data-label="Remove"><button class="btn danger remove-ipm" type="button">Remove Entry</button></td>
   </tr>
 </template>
 
