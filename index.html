@@ -283,6 +283,122 @@ td input, td select { min-height: 31px; padding: 5px 7px; border-radius: 8px; }
   .actions, .actions .btn { width: 100%; }
   .crop-mini-pill { width: 100%; text-align: center; }
 }
+
+
+/* Ultra-slim iframe summary strips */
+.compact-summary {
+  padding: 4px 6px !important;
+  margin-bottom: 6px !important;
+  border-radius: 6px !important;
+}
+.compact-summary .card-title { display: none !important; }
+.compact-summary .summary-grid {
+  display: grid !important;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  gap: 4px !important;
+}
+.compact-summary .metric,
+.crop-stats .stat {
+  min-height: 22px !important;
+  padding: 4px 6px !important;
+  border-radius: 6px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 6px !important;
+  min-width: 0 !important;
+  background: #FDFBF7 !important;
+}
+.compact-summary .metric .label,
+.crop-stats .stat .label {
+  margin: 0 !important;
+  font-size: 8px !important;
+  line-height: 1 !important;
+  letter-spacing: .06em !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+.compact-summary .metric .value,
+.crop-stats .stat .value {
+  font-size: 12px !important;
+  line-height: 1 !important;
+  margin: 0 !important;
+  flex: 0 0 auto !important;
+}
+.crop-stats {
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  gap: 4px !important;
+  margin-bottom: 6px !important;
+}
+@media (max-width: 768px) {
+  .compact-summary .summary-grid,
+  .crop-stats { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+  .compact-summary .metric,
+  .crop-stats .stat { min-height: 24px !important; }
+}
+@media (max-width: 420px) {
+  .compact-summary .metric .label,
+  .crop-stats .stat .label { font-size: 7px !important; }
+  .compact-summary .metric .value,
+  .crop-stats .stat .value { font-size: 11px !important; }
+}
+
+
+
+/* MAX-CLEAN IFRAME MODE: hide bulky calculated tiles/cards from entry view */
+.crop-stats { display: none !important; }
+.compact-summary {
+  padding: 0 !important;
+  margin: 0 0 5px 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+}
+.compact-summary .summary-grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  gap: 3px !important;
+}
+.compact-summary .metric {
+  min-height: 18px !important;
+  height: 18px !important;
+  padding: 2px 5px !important;
+  border-radius: 4px !important;
+  border-width: 1px !important;
+  background: #fff !important;
+}
+.compact-summary .metric .label { font-size: 6.5px !important; letter-spacing: .05em !important; }
+.compact-summary .metric .value { font-size: 10px !important; }
+/* Hide calculated AI output columns in the working entry table. Values still calculate for CSV. */
+table th:nth-child(7), table th:nth-child(8),
+table td:nth-child(7), table td:nth-child(8) { display: none !important; }
+@media (max-width: 1100px) {
+  tr.ipm-row {
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+    gap: 5px !important;
+    padding: 6px !important;
+    border-radius: 5px !important;
+  }
+  td { gap: 2px !important; }
+  td::before { font-size: 7px !important; letter-spacing: .05em !important; }
+  td input, td select, td textarea,
+  input, select, textarea {
+    min-height: 30px !important;
+    height: 30px !important;
+    padding: 4px 7px !important;
+    font-size: 14px !important;
+    border-radius: 6px !important;
+  }
+  td:last-child .btn { min-height: 30px !important; }
+}
+@media (max-width: 760px) {
+  .compact-summary .summary-grid { grid-template-columns: repeat(4, minmax(0, 1fr)) !important; }
+  tr.ipm-row { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+}
+@media (max-width: 420px) {
+  .compact-summary .summary-grid { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+  tr.ipm-row { grid-template-columns: 1fr !important; }
+}
+
 </style>
 </head>
 <body>
