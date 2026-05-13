@@ -26,67 +26,65 @@ html, body {
   background: transparent;
   color: var(--sci-ink);
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-  line-height: 1.45;
+  line-height: 1.4;
   font-size: 13px;
 }
 button, input, select, textarea { font: inherit; }
 .page { width: 100%; max-width: 100%; margin: 0; padding: 8px; }
-.card, .crop-card {
+.card, .crop-card, .crop-page-shell {
   background: var(--white);
   border: 1px solid var(--sci-line);
   border-radius: 14px;
-  padding: 14px;
+  padding: 12px;
   margin-bottom: 10px;
 }
-.card-title, .section-title {
+.card-title, .section-title, .optional-toolbar {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  gap: 12px;
-  margin-bottom: 12px;
+  gap: 10px;
 }
-.section-title { margin-top: 12px; margin-bottom: 8px; }
+.card-title { margin-bottom: 10px; }
+.section-title { margin-bottom: 8px; }
 h2, h3, h4 {
   margin: 0;
   color: var(--sci-earth);
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   font-weight: 800;
   letter-spacing: -.01em;
 }
-h2 { font-size: 17px; }
-h3 { font-size: 15px; }
+h2 { font-size: 16px; }
+h3 { font-size: 14px; }
 h4 { font-size: 13px; }
-.help { color: var(--sci-muted); font-size: 11px; margin-top: 2px; }
+.help { color: var(--sci-muted); font-size: 10.5px; margin-top: 2px; }
 .input-grid {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 10px;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 8px;
 }
-.field { display: flex; flex-direction: column; gap: 6px; }
+.field { display: flex; flex-direction: column; gap: 5px; }
 label, .label {
   color: var(--sci-muted);
-  font-size: 9.5px;
+  font-size: 9px;
   font-weight: 800;
-  letter-spacing: .11em;
+  letter-spacing: .1em;
   text-transform: uppercase;
 }
 input, select, textarea {
   width: 100%;
-  min-height: 38px;
+  min-height: 36px;
   border: 1px solid var(--sci-line);
-  border-radius: 10px;
+  border-radius: 9px;
   background: #fff;
   color: var(--sci-ink);
-  padding: 8px 10px;
+  padding: 7px 9px;
   outline: none;
 }
-textarea { min-height: 38px; resize: vertical; }
 input:focus, select:focus, textarea:focus { border-color: var(--sci-clay); box-shadow: 0 0 0 3px rgba(168,85,31,.12); }
-.actions { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.actions { display: flex; flex-wrap: wrap; gap: 7px; align-items: center; }
 .btn {
   border: 0;
-  border-radius: 10px;
-  padding: 8px 12px;
+  border-radius: 9px;
+  padding: 7px 11px;
   color: #fff;
   background: var(--sci-leaf-deep);
   cursor: pointer;
@@ -94,284 +92,204 @@ input:focus, select:focus, textarea:focus { border-color: var(--sci-clay); box-s
   font-size: 12px;
   white-space: nowrap;
 }
-.btn:hover { filter: brightness(.98); }
 .btn.secondary { background: var(--sci-clay); }
 .btn.ghost { background: #fff; color: var(--sci-earth); border: 1px solid var(--sci-line); }
 .btn.danger { background: #8D3B1F; }
 .btn:disabled { opacity: .5; cursor: not-allowed; }
-.summary-grid {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(120px, 1fr));
-  gap: 6px;
-}
-.metric {
-  background: #fff;
-  border: 1px solid var(--sci-line);
-  border-radius: 10px;
-  padding: 8px;
-}
-.metric .label { margin-bottom: 4px; }
-.metric .value { font-size: 15px; font-weight: 850; color: var(--sci-earth); letter-spacing: -.03em; }
-.metric .small { font-size: 11px; color: var(--sci-muted); margin-top: 1px; }
-.crop-name-tile { color: var(--sci-earth); font-weight: 850; font-size: 12px; margin-bottom: 2px; }
-.crop-head {
-  display: grid;
-  grid-template-columns: minmax(180px, 1.2fr) minmax(115px, .55fr) auto;
-  gap: 10px;
-  align-items: end;
-  padding: 12px;
-  margin: -14px -14px 10px;
-  background: var(--sci-soft);
-  border-bottom: 1px solid var(--sci-line);
-  border-radius: 14px 14px 0 0;
-}
-.crop-stats {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 8px;
-  margin-bottom: 8px;
-}
-.stat { border: 1px solid var(--sci-line); background: #fff; border-radius: 10px; padding: 8px; }
-.stat .value { font-size: 16px; font-weight: 850; color: var(--sci-leaf-deep); }
-.table-wrap { overflow-x: auto; border-radius: 10px; border: 1px solid #EFE7D7; }
-table { width: 100%; border-collapse: separate; border-spacing: 0; min-width: 1120px; }
-th {
-  text-align: left;
-  color: var(--sci-earth);
-  background: #F4EBD9;
-  font-size: 9.5px;
-  letter-spacing: .075em;
-  text-transform: uppercase;
-  border-bottom: 1px solid var(--sci-line);
-  padding: 7px;
-  white-space: nowrap;
-}
-td { border-bottom: 1px solid #EFE7D7; padding: 5px; vertical-align: middle; background: #fff; }
-tbody tr:nth-child(even) td { background: #FDFBF7; }
-td input, td select, td textarea { min-height: 32px; padding: 5px 7px; border-radius: 8px; }
-.readonly { color: var(--sci-earth); font-weight: 800; white-space: nowrap; }
-.crop-actions, .row-actions { padding-top: 8px; display: flex; gap: 8px; flex-wrap: wrap; }
-.note {
-  border-left: 4px solid var(--sci-clay);
-  background: var(--warn-bg);
-  color: var(--sci-earth);
-  padding: 9px 11px;
-  border-radius: 10px;
-  font-size: 12px;
-  margin-bottom: 8px;
-}
-
 .compact-summary {
-  padding: 10px;
-  margin-bottom: 10px;
+  padding: 6px 8px;
+  margin-bottom: 8px;
+  border-radius: 8px;
 }
 .compact-summary .card-title {
-  margin-bottom: 8px;
+  margin-bottom: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
 }
 .compact-summary h2 {
-  font-size: 14px;
+  font-size: 12px;
+  line-height: 1;
+  margin: 0;
 }
-.compact-summary .help {
-  font-size: 10.5px;
-  line-height: 1.25;
-}
-.compact-summary .summary-grid {
+.compact-summary .help { display: none; }
+.summary-grid {
+  display: grid;
   grid-template-columns: repeat(4, minmax(95px, 1fr));
-  gap: 5px;
+  gap: 3px;
 }
-.compact-summary .metric {
-  padding: 6px 7px;
-  border-radius: 9px;
+.metric, .stat {
+  background: #FDFBF7;
+  border: 1px solid var(--sci-line);
+  border-radius: 5px;
+  padding: 3px 5px;
 }
-.compact-summary .metric .label {
-  font-size: 8.5px;
-  margin-bottom: 2px;
+.metric .label { font-size: 7px; line-height: 1.05; letter-spacing: .06em; margin-bottom: 1px; }
+.metric .value, .stat .value {
+  font-size: 10.5px;
+  font-weight: 850;
+  color: var(--sci-earth);
+  letter-spacing: -.03em;
+  line-height: 1.05;
 }
-.compact-summary .metric .value {
-  font-size: 13px;
-  line-height: 1.1;
-}
-.compact-summary .metric .small {
-  font-size: 9.5px;
-  margin-top: 1px;
-}
-.crop-mini-summary {
-  margin-top: 6px;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 5px;
-}
+.metric .small { display: none; }
+.crop-mini-summary { display: none; }
 .crop-mini-pill {
   border: 1px solid var(--sci-line);
   border-radius: 999px;
   padding: 4px 7px;
   background: #fff;
   color: var(--sci-earth);
-  font-size: 10.5px;
+  font-size: 10px;
   font-weight: 800;
   white-space: nowrap;
 }
-.crop-page-shell {
-  background: #fff;
-  border: 1px solid var(--sci-line);
-  border-radius: 14px;
-  padding: 10px;
-  margin-bottom: 10px;
+.note {
+  border-left: 4px solid var(--sci-clay);
+  background: var(--warn-bg);
+  color: var(--sci-earth);
+  padding: 8px 10px;
+  border-radius: 9px;
+  font-size: 12px;
+  margin-bottom: 8px;
 }
+.crop-page-shell { padding: 10px; }
 .crop-page-top {
   display: grid;
   grid-template-columns: 1fr auto;
-  gap: 10px;
+  gap: 8px;
   align-items: center;
   margin-bottom: 8px;
 }
-.crop-tabs {
-  display: flex;
-  gap: 6px;
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-  padding-bottom: 2px;
-}
+.crop-tabs { display: flex; gap: 6px; overflow-x: auto; -webkit-overflow-scrolling: touch; padding-bottom: 2px; }
 .crop-tab {
   border: 1px solid var(--sci-line);
   background: #fff;
   color: var(--sci-earth);
   border-radius: 999px;
-  padding: 7px 10px;
+  padding: 6px 10px;
   font-size: 12px;
   font-weight: 800;
   white-space: nowrap;
   cursor: pointer;
 }
-.crop-tab.active {
-  background: var(--sci-leaf-deep);
-  border-color: var(--sci-leaf-deep);
-  color: #fff;
+.crop-tab.active { background: var(--sci-leaf-deep); border-color: var(--sci-leaf-deep); color: #fff; }
+.crop-page-controls { display: flex; gap: 6px; align-items: center; white-space: nowrap; }
+.crop-page-count { color: var(--sci-muted); font-size: 12px; font-weight: 800; }
+.crop-card { display: none; padding: 12px; }
+.crop-card.active-crop { display: block; }
+.crop-head {
+  display: grid;
+  grid-template-columns: minmax(180px, 1.2fr) minmax(115px, .55fr) auto;
+  gap: 9px;
+  align-items: end;
+  padding: 10px;
+  margin: -12px -12px 9px;
+  background: var(--sci-soft);
+  border-bottom: 1px solid var(--sci-line);
+  border-radius: 14px 14px 0 0;
 }
-.crop-page-controls {
+.crop-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 9px; }
+.stat .value { color: var(--sci-leaf-deep); }
+.optional-bar {
   display: flex;
-  gap: 6px;
+  gap: 7px;
+  flex-wrap: wrap;
   align-items: center;
+  padding: 8px;
+  border: 1px dashed var(--sci-line);
+  background: #FDFBF7;
+  border-radius: 11px;
+  margin-bottom: 8px;
+}
+.optional-bar .help { margin: 0; flex: 1 1 220px; }
+.optional-panel {
+  border: 1px solid #EFE7D7;
+  border-radius: 11px;
+  overflow: hidden;
+  margin-top: 8px;
+}
+.optional-panel-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  align-items: center;
+  padding: 8px 9px;
+  background: #F4EBD9;
+  border-bottom: 1px solid var(--sci-line);
+}
+.table-wrap { overflow-x: auto; }
+table { width: 100%; border-collapse: separate; border-spacing: 0; min-width: 1050px; }
+th {
+  text-align: left;
+  color: var(--sci-earth);
+  background: #F4EBD9;
+  font-size: 9px;
+  letter-spacing: .075em;
+  text-transform: uppercase;
+  border-bottom: 1px solid var(--sci-line);
+  padding: 6px;
   white-space: nowrap;
 }
-.crop-page-count {
-  color: var(--sci-muted);
-  font-size: 12px;
-  font-weight: 800;
-}
-.crop-card { display: none; }
-.crop-card.active-crop { display: block; }
-
-
-/* Iframe-friendly stacked IPM entry layout */
+td { border-bottom: 1px solid #EFE7D7; padding: 5px; vertical-align: middle; background: #fff; }
+tbody tr:nth-child(even) td { background: #FDFBF7; }
+td input, td select { min-height: 31px; padding: 5px 7px; border-radius: 8px; }
+.readonly { color: var(--sci-earth); font-weight: 800; white-space: nowrap; }
+.hidden { display: none !important; }
 @media (max-width: 920px) {
   .page { padding: 6px; }
-  .card, .crop-card, .crop-page-shell { border-radius: 12px; padding: 10px; }
-  .card-title, .section-title { gap: 8px; margin-bottom: 8px; }
+  .card, .crop-card, .crop-page-shell { border-radius: 12px; padding: 9px; }
+  .card-title, .section-title, .optional-toolbar { gap: 8px; margin-bottom: 8px; }
   .input-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
-  .compact-summary { padding: 8px; }
-  .compact-summary .summary-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .summary-grid { gap: 5px; }
-  .metric { padding: 6px 7px; }
-  .crop-page-top { grid-template-columns: 1fr; gap: 8px; }
+  .summary-grid, .crop-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .compact-summary .summary-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .crop-page-top { grid-template-columns: 1fr; }
   .crop-page-controls { width: 100%; justify-content: space-between; }
-  .crop-tabs { padding-bottom: 4px; }
-  .crop-head {
-    grid-template-columns: 1fr;
-    gap: 8px;
-    margin: -10px -10px 8px;
-    padding: 10px;
-  }
+  .crop-head { grid-template-columns: 1fr; margin: -9px -9px 8px; padding: 9px; }
   .remove-crop { width: 100%; }
-  .crop-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; }
-  .stat { padding: 7px; }
-  .stat .value { font-size: 14px; }
-  .table-wrap {
-    overflow: visible;
-    border: 0;
-    border-radius: 0;
-  }
-  table,
-  thead,
-  tbody,
-  tr,
-  th,
-  td {
-    display: block;
-    width: 100%;
-  }
+  .table-wrap { overflow: visible; }
+  table, thead, tbody, tr, th, td { display: block; width: 100%; }
   table { min-width: 0; border-spacing: 0; }
   thead { display: none; }
   .ipm-row {
     border: 1px solid var(--sci-line);
-    border-radius: 12px;
+    border-radius: 11px;
     background: #fff;
     padding: 8px;
     margin-bottom: 8px;
-    box-shadow: 0 1px 0 rgba(61,47,30,.03);
   }
-  td {
-    border-bottom: 0;
-    padding: 5px 0;
-    background: transparent !important;
-  }
+  td { border-bottom: 0; padding: 5px 0; background: transparent !important; }
   td::before {
     content: attr(data-label);
     display: block;
     color: var(--sci-muted);
-    font-size: 9px;
+    font-size: 8.5px;
     font-weight: 800;
     letter-spacing: .1em;
     text-transform: uppercase;
     margin-bottom: 3px;
   }
-  td input,
-  td select,
-  td textarea {
-    min-height: 36px;
-    width: 100%;
-  }
-  td.readonly {
-    border: 1px solid #EFE7D7;
-    border-radius: 9px;
-    padding: 7px 9px;
-    background: #FDFBF7 !important;
-  }
-  td.readonly::before { margin-bottom: 2px; }
+  td.readonly { border: 1px solid #EFE7D7; border-radius: 9px; padding: 7px 9px; background: #FDFBF7 !important; }
   td:last-child::before { display: none; }
-  td:last-child { padding-top: 7px; }
-  .remove-ipm { width: 100%; }
-  .crop-actions .btn { width: 100%; }
-  .actions .btn { flex: 1 1 auto; }
+  .remove-ipm, .optional-panel-head .btn, .optional-bar .btn { width: 100%; }
+  .optional-panel-head, .optional-bar { align-items: stretch; flex-direction: column; }
 }
-
 @media (max-width: 520px) {
   html, body { font-size: 12.5px; }
-  .input-grid,
-  .summary-grid,
-  .compact-summary .summary-grid,
-  .crop-stats {
-    grid-template-columns: 1fr;
-  }
-  .card-title,
-  .section-title {
-    flex-direction: column;
-    align-items: stretch;
-  }
-  .actions { width: 100%; }
-  .actions .btn { width: 100%; }
-  .crop-mini-summary { gap: 4px; }
+  .input-grid, .summary-grid, .crop-stats { grid-template-columns: 1fr; }
+  .compact-summary .summary-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .card-title, .section-title { flex-direction: column; align-items: stretch; }
+  .actions, .actions .btn { width: 100%; }
   .crop-mini-pill { width: 100%; text-align: center; }
 }
-
-.hidden { display: none !important; }
 </style>
 </head>
 <body>
 <div class="page">
   <section class="card">
     <div class="card-title">
-      <div><h2>Farm Details</h2><div class="help">Enter farm acres, choose the number of crops, then add IPM applications for weeds or pests.</div></div>
+      <div><h2>Farm Details</h2><div class="help">Enter farm acres, choose crops, then add IPM applications only when needed.</div></div>
       <div class="actions"><button class="btn secondary" id="exportCsvBtn" type="button">Export CSV</button></div>
     </div>
     <div class="input-grid">
@@ -385,7 +303,7 @@ td input, td select, td textarea { min-height: 32px; padding: 5px 7px; border-ra
 
   <section class="card compact-summary">
     <div class="card-title">
-      <div><h2>Quick Summary</h2><div class="help">Small check of crop acres, IPM entries, and active ingredient totals.</div></div>
+      <div><h2>Summary</h2><div class="help">Compact totals for iframe viewing.</div></div>
       <div class="actions"><button class="btn ghost" id="addCropBtn" type="button">Add Crop</button></div>
     </div>
     <div id="acreWarning" class="note hidden"></div>
@@ -425,29 +343,27 @@ td input, td select, td textarea { min-height: 32px; padding: 5px 7px; border-ra
       <div class="stat"><div class="label">Crop Acres</div><div class="value crop-acres-stat">0.00</div></div>
     </div>
 
-    <div class="section-title">
-      <div><h3>IPM Applications</h3><div class="help">Use the product label rate as Amount / Acre and enter active ingredient as a percentage, such as 41 for 41%.</div></div>
+    <div class="optional-bar">
+      <div class="help">Add IPM applications only when this crop has pesticide, herbicide, fungicide, or insecticide entries.</div>
+      <button class="btn ghost add-ipm" type="button">Add IPM Entry</button>
     </div>
-    <div class="table-wrap">
-      <table>
-        <thead>
-          <tr>
-            <th>Application Date</th>
-            <th style="width:170px">Weed or Pest</th>
-            <th style="width:170px">Product Name</th>
-            <th>Unit</th>
-            <th>Amount / Acre</th>
-            <th>% Active Ingredient</th>
-            <th>Active Ingredient / Acre</th>
-            <th>Total Active Ingredient</th>
-            <th>Notes</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody class="ipm-body"></tbody>
-      </table>
-    </div>
-    <div class="crop-actions"><button class="btn ghost add-ipm" type="button">Add IPM Entry</button></div>
+
+    <section class="optional-panel ipm-panel hidden">
+      <div class="optional-panel-head">
+        <div><h3>IPM Applications</h3><div class="help">Use the product label rate as Amount / Acre and active ingredient as a percentage.</div></div>
+        <button class="btn ghost add-ipm-panel" type="button">Add Another Entry</button>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Application Date</th><th style="width:170px">Weed or Pest</th><th style="width:170px">Product Name</th><th>Unit</th><th>Amount / Acre</th><th>% Active Ingredient</th><th>AI / Acre</th><th>Total AI</th><th>Notes</th><th></th>
+            </tr>
+          </thead>
+          <tbody class="ipm-body"></tbody>
+        </table>
+      </div>
+    </section>
   </section>
 </template>
 
@@ -470,24 +386,43 @@ td input, td select, td textarea { min-height: 32px; padding: 5px 7px; border-ra
 const MAX_CROPS = 10;
 let cropCounter = 0;
 let activeCropIndex = 0;
-
 const $ = (sel, root = document) => root.querySelector(sel);
 const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
 const num = v => Number.isFinite(parseFloat(v)) ? parseFloat(v) : 0;
 const fmt = (n, d = 2) => Number.isFinite(n) ? n.toFixed(d) : (0).toFixed(d);
 
+function getCropCards() { return $$('.crop-card'); }
+function clampPct(value) { return Math.min(100, Math.max(0, num(value))); }
+function clearRow(row) { $$('input, textarea', row).forEach(input => input.value = ''); $$('select', row).forEach(select => select.selectedIndex = 0); }
 
-function getCropCards() {
-  return $$('.crop-card');
+function updateOptionalPanels(crop) {
+  if (!crop) return;
+  const hasIpm = $$('.ipm-row', crop).length > 0;
+  $('.ipm-panel', crop).classList.toggle('hidden', !hasIpm);
+}
+
+function createIpmRow() {
+  const row = $('#ipmTemplate').content.firstElementChild.cloneNode(true);
+  row.addEventListener('input', calculateAll);
+  row.addEventListener('change', calculateAll);
+  $('.remove-ipm', row).addEventListener('click', () => {
+    const crop = row.closest('.crop-card');
+    row.remove();
+    updateOptionalPanels(crop);
+    calculateAll();
+  });
+  return row;
+}
+
+function addIpmEntry(crop) {
+  $('.ipm-body', crop).appendChild(createIpmRow());
+  updateOptionalPanels(crop);
+  calculateAll();
 }
 
 function setActiveCrop(index) {
   const crops = getCropCards();
-  if (!crops.length) {
-    activeCropIndex = 0;
-    renderCropNavigation();
-    return;
-  }
+  if (!crops.length) { activeCropIndex = 0; renderCropNavigation(); return; }
   activeCropIndex = Math.max(0, Math.min(index, crops.length - 1));
   crops.forEach((crop, i) => crop.classList.toggle('active-crop', i === activeCropIndex));
   renderCropNavigation();
@@ -513,28 +448,6 @@ function renderCropNavigation() {
   $('#nextCropBtn').disabled = activeCropIndex >= crops.length - 1;
 }
 
-function clampPct(value) {
-  return Math.min(100, Math.max(0, num(value)));
-}
-
-function createIpmRow() {
-  const row = $('#ipmTemplate').content.firstElementChild.cloneNode(true);
-  row.addEventListener('input', calculateAll);
-  row.addEventListener('change', calculateAll);
-  $('.remove-ipm', row).addEventListener('click', () => {
-    const body = row.closest('.ipm-body');
-    if ($$('.ipm-row', body).length > 1) row.remove();
-    else clearRow(row);
-    calculateAll();
-  });
-  return row;
-}
-
-function clearRow(row) {
-  $$('input, textarea', row).forEach(input => input.value = '');
-  $$('select', row).forEach(select => select.selectedIndex = 0);
-}
-
 function desiredCropCount() {
   const input = $('#cropCount');
   let count = Math.round(num(input.value));
@@ -546,10 +459,7 @@ function desiredCropCount() {
 
 function syncCropCardsToCount() {
   const target = desiredCropCount();
-  while ($$('.crop-card').length < target) {
-    const next = $$('.crop-card').length + 1;
-    addCrop(`Crop ${next}`, '');
-  }
+  while ($$('.crop-card').length < target) addCrop(`Crop ${$$('.crop-card').length + 1}`, '');
   while ($$('.crop-card').length > target) {
     const all = $$('.crop-card');
     all[all.length - 1].remove();
@@ -565,12 +475,7 @@ function addCrop(name = '', acres = '') {
   crop.dataset.cropId = String(cropCounter);
   $('.crop-name', crop).value = name;
   $('.crop-acres', crop).value = acres;
-  $('.ipm-body', crop).appendChild(createIpmRow());
-
-  $('.add-ipm', crop).addEventListener('click', () => {
-    $('.ipm-body', crop).appendChild(createIpmRow());
-    calculateAll();
-  });
+  $$('.add-ipm, .add-ipm-panel', crop).forEach(btn => btn.addEventListener('click', () => addIpmEntry(crop)));
   $('.remove-crop', crop).addEventListener('click', () => {
     const removedIndex = $$('.crop-card').indexOf(crop);
     crop.remove();
@@ -582,6 +487,7 @@ function addCrop(name = '', acres = '') {
   crop.addEventListener('input', calculateAll);
   crop.addEventListener('change', calculateAll);
   $('#crops').appendChild(crop);
+  updateOptionalPanels(crop);
   setActiveCrop($$('.crop-card').length - 1);
   calculateAll();
 }
@@ -632,8 +538,8 @@ function calculateAll() {
     $('.crop-ai-total', crop).textContent = fmt(cropAITotal, 4);
     $('.crop-products', crop).textContent = String(cropEntries);
     $('.crop-acres-stat', crop).textContent = fmt(cropAcres, 2);
-
-    cropTiles.push({ cropName, cropAcres, cropAIperAcre, cropAITotal, cropEntries });
+    cropTiles.push({ cropName, cropAITotal, cropEntries });
+    updateOptionalPanels(crop);
   });
 
   const remaining = totalAcres - cropAcresTotal;
@@ -641,17 +547,11 @@ function calculateAll() {
   $('#remainingAcres').textContent = fmt(remaining, 2);
   $('#farmEntries').textContent = String(farmEntries);
   $('#farmTotalAI').textContent = fmt(farmTotalAI, 4);
-
   const warning = $('#acreWarning');
   if (totalAcres > 0 && Math.abs(remaining) > 0.01) {
-    warning.textContent = remaining < 0
-      ? `Crop acres exceed total acres by ${fmt(Math.abs(remaining), 2)} acres.`
-      : `${fmt(remaining, 2)} acres remain unassigned to crops.`;
+    warning.textContent = remaining < 0 ? `Crop acres exceed total acres by ${fmt(Math.abs(remaining), 2)} acres.` : `${fmt(remaining, 2)} acres remain unassigned to crops.`;
     warning.classList.remove('hidden');
-  } else {
-    warning.classList.add('hidden');
-  }
-
+  } else warning.classList.add('hidden');
   const tileWrap = $('#cropAITiles');
   tileWrap.innerHTML = '';
   cropTiles.forEach(tile => {
@@ -665,8 +565,7 @@ function calculateAll() {
 
 function csvEscape(value) {
   const str = String(value ?? '');
-  if (/[",\n]/.test(str)) return `"${str.replace(/"/g, '""')}"`;
-  return str;
+  return /[",\n]/.test(str) ? `"${str.replace(/"/g, '""')}"` : str;
 }
 
 function exportCsv() {
@@ -675,58 +574,19 @@ function exportCsv() {
   const state = $('#state').value;
   const totalAcres = $('#totalAcres').value;
   const preparedBy = $('#preparedBy').value.trim();
-
-  const rows = [[
-    'Farm Name',
-    'State',
-    'Total Farm Acres',
-    'Prepared By',
-    'Crop',
-    'Crop Acres',
-    'Application Date',
-    'Weed or Pest',
-    'Product Name',
-    'Unit',
-    'Amount per Acre',
-    'Percent Active Ingredient',
-    'Active Ingredient per Acre',
-    'Total Active Ingredient over Crop Acres',
-    'Notes'
-  ]];
-
+  const rows = [['Farm Name','State','Total Farm Acres','Prepared By','Crop','Crop Acres','Application Date','Weed or Pest','Product Name','Unit','Amount per Acre','Percent Active Ingredient','Active Ingredient per Acre','Total Active Ingredient over Crop Acres','Notes']];
   $$('.crop-card').forEach((crop, idx) => {
     const cropName = $('.crop-name', crop).value.trim() || `Crop ${idx + 1}`;
     const cropAcres = num($('.crop-acres', crop).value);
     let addedRow = false;
-
     $$('.ipm-row', crop).forEach(row => {
       const data = getIpmData(crop, row);
       if (!data.hasEntry) return;
-      rows.push([
-        farmName,
-        state,
-        totalAcres,
-        preparedBy,
-        cropName,
-        fmt(cropAcres, 2),
-        data.applicationDate,
-        data.pest,
-        data.productName,
-        data.productUnit,
-        fmt(data.amountPerAcre, 3),
-        fmt(data.activePct, 2),
-        fmt(data.activeIngredientPerAcre, 4),
-        fmt(data.totalActiveIngredient, 4),
-        data.notes
-      ]);
+      rows.push([farmName, state, totalAcres, preparedBy, cropName, fmt(cropAcres, 2), data.applicationDate, data.pest, data.productName, data.productUnit, fmt(data.amountPerAcre, 3), fmt(data.activePct, 2), fmt(data.activeIngredientPerAcre, 4), fmt(data.totalActiveIngredient, 4), data.notes]);
       addedRow = true;
     });
-
-    if (!addedRow && (cropName || cropAcres > 0)) {
-      rows.push([farmName, state, totalAcres, preparedBy, cropName, fmt(cropAcres, 2), '', '', '', '', '', '', '', '', '']);
-    }
+    if (!addedRow && (cropName || cropAcres > 0)) rows.push([farmName, state, totalAcres, preparedBy, cropName, fmt(cropAcres, 2), '', '', '', '', '', '', '', '', '']);
   });
-
   const csv = rows.map(row => row.map(csvEscape).join(',')).join('\n');
   const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
   const url = URL.createObjectURL(blob);
@@ -755,7 +615,6 @@ $('#exportCsvBtn').addEventListener('click', exportCsv);
   $(`#${id}`).addEventListener('input', calculateAll);
   $(`#${id}`).addEventListener('change', calculateAll);
 });
-
 syncCropCardsToCount();
 </script>
 </body>
