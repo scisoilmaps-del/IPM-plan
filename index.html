@@ -160,11 +160,115 @@ td input, td select, td textarea { min-height: 32px; padding: 5px 7px; border-ra
   font-size: 12px;
   margin-bottom: 8px;
 }
+
+.compact-summary {
+  padding: 10px;
+  margin-bottom: 10px;
+}
+.compact-summary .card-title {
+  margin-bottom: 8px;
+}
+.compact-summary h2 {
+  font-size: 14px;
+}
+.compact-summary .help {
+  font-size: 10.5px;
+  line-height: 1.25;
+}
+.compact-summary .summary-grid {
+  grid-template-columns: repeat(4, minmax(95px, 1fr));
+  gap: 5px;
+}
+.compact-summary .metric {
+  padding: 6px 7px;
+  border-radius: 9px;
+}
+.compact-summary .metric .label {
+  font-size: 8.5px;
+  margin-bottom: 2px;
+}
+.compact-summary .metric .value {
+  font-size: 13px;
+  line-height: 1.1;
+}
+.compact-summary .metric .small {
+  font-size: 9.5px;
+  margin-top: 1px;
+}
+.crop-mini-summary {
+  margin-top: 6px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+.crop-mini-pill {
+  border: 1px solid var(--sci-line);
+  border-radius: 999px;
+  padding: 4px 7px;
+  background: #fff;
+  color: var(--sci-earth);
+  font-size: 10.5px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+.crop-page-shell {
+  background: #fff;
+  border: 1px solid var(--sci-line);
+  border-radius: 14px;
+  padding: 10px;
+  margin-bottom: 10px;
+}
+.crop-page-top {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 8px;
+}
+.crop-tabs {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 2px;
+}
+.crop-tab {
+  border: 1px solid var(--sci-line);
+  background: #fff;
+  color: var(--sci-earth);
+  border-radius: 999px;
+  padding: 7px 10px;
+  font-size: 12px;
+  font-weight: 800;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.crop-tab.active {
+  background: var(--sci-leaf-deep);
+  border-color: var(--sci-leaf-deep);
+  color: #fff;
+}
+.crop-page-controls {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  white-space: nowrap;
+}
+.crop-page-count {
+  color: var(--sci-muted);
+  font-size: 12px;
+  font-weight: 800;
+}
+.crop-card { display: none; }
+.crop-card.active-crop { display: block; }
+
 .hidden { display: none !important; }
 @media (max-width: 760px) {
   .page { padding: 6px; }
   .input-grid, .summary-grid, .crop-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .crop-head { grid-template-columns: 1fr 1fr; }
+  .crop-page-top { grid-template-columns: 1fr; }
+  .crop-page-controls { justify-content: space-between; }
   .remove-crop { grid-column: 1 / -1; justify-self: start; }
 }
 @media (max-width: 480px) {
@@ -189,22 +293,32 @@ td input, td select, td textarea { min-height: 32px; padding: 5px 7px; border-ra
     </div>
   </section>
 
-  <section class="card">
+  <section class="card compact-summary">
     <div class="card-title">
-      <div><h2>Quick Summary</h2><div class="help">Active ingredient is calculated as Amount / Acre × % Active Ingredient. Crop total is Active Ingredient / Acre × Crop Acres.</div></div>
+      <div><h2>Quick Summary</h2><div class="help">Small check of crop acres, IPM entries, and active ingredient totals.</div></div>
       <div class="actions"><button class="btn ghost" id="addCropBtn" type="button">Add Crop</button></div>
     </div>
     <div id="acreWarning" class="note hidden"></div>
     <div class="summary-grid">
-      <div class="metric"><div class="label">Crop Acres Entered</div><div class="value" id="sumCropAcres">0.00</div><div class="small">Sum of crop acres</div></div>
-      <div class="metric"><div class="label">Remaining Acres</div><div class="value" id="remainingAcres">0.00</div><div class="small">Total acres minus crop acres</div></div>
-      <div class="metric"><div class="label">IPM Entries</div><div class="value" id="farmEntries">0</div><div class="small">Total applications entered</div></div>
-      <div class="metric"><div class="label">Total Active Ingredient</div><div class="value" id="farmTotalAI">0.00</div><div class="small">Across crop acres</div></div>
+      <div class="metric"><div class="label">Crop Acres</div><div class="value" id="sumCropAcres">0.00</div><div class="small">Entered</div></div>
+      <div class="metric"><div class="label">Remaining</div><div class="value" id="remainingAcres">0.00</div><div class="small">Unassigned</div></div>
+      <div class="metric"><div class="label">IPM Entries</div><div class="value" id="farmEntries">0</div><div class="small">All crops</div></div>
+      <div class="metric"><div class="label">Total AI</div><div class="value" id="farmTotalAI">0.00</div><div class="small">Across acres</div></div>
     </div>
-    <div style="margin-top:10px"><div class="label" style="margin-bottom:6px">Active Ingredient Per Crop</div><div class="summary-grid" id="cropAITiles"></div></div>
+    <div class="crop-mini-summary" id="cropAITiles"></div>
   </section>
 
-  <main id="crops"></main>
+  <section class="crop-page-shell">
+    <div class="crop-page-top">
+      <div class="crop-tabs" id="cropTabs" aria-label="Crop pages"></div>
+      <div class="crop-page-controls">
+        <button class="btn ghost" id="prevCropBtn" type="button">Previous</button>
+        <span class="crop-page-count" id="cropPageCount">Crop 1 of 1</span>
+        <button class="btn ghost" id="nextCropBtn" type="button">Next</button>
+      </div>
+    </div>
+    <main id="crops"></main>
+  </section>
 </div>
 
 <template id="cropTemplate">
@@ -265,11 +379,49 @@ td input, td select, td textarea { min-height: 32px; padding: 5px 7px; border-ra
 <script>
 const MAX_CROPS = 10;
 let cropCounter = 0;
+let activeCropIndex = 0;
 
 const $ = (sel, root = document) => root.querySelector(sel);
 const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
 const num = v => Number.isFinite(parseFloat(v)) ? parseFloat(v) : 0;
 const fmt = (n, d = 2) => Number.isFinite(n) ? n.toFixed(d) : (0).toFixed(d);
+
+
+function getCropCards() {
+  return $$('.crop-card');
+}
+
+function setActiveCrop(index) {
+  const crops = getCropCards();
+  if (!crops.length) {
+    activeCropIndex = 0;
+    renderCropNavigation();
+    return;
+  }
+  activeCropIndex = Math.max(0, Math.min(index, crops.length - 1));
+  crops.forEach((crop, i) => crop.classList.toggle('active-crop', i === activeCropIndex));
+  renderCropNavigation();
+}
+
+function renderCropNavigation() {
+  const crops = getCropCards();
+  const tabs = $('#cropTabs');
+  const pageCount = $('#cropPageCount');
+  if (!tabs || !pageCount) return;
+  tabs.innerHTML = '';
+  crops.forEach((crop, index) => {
+    const name = $('.crop-name', crop)?.value.trim() || `Crop ${index + 1}`;
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = `crop-tab${index === activeCropIndex ? ' active' : ''}`;
+    btn.textContent = name;
+    btn.addEventListener('click', () => setActiveCrop(index));
+    tabs.appendChild(btn);
+  });
+  pageCount.textContent = crops.length ? `Crop ${activeCropIndex + 1} of ${crops.length}` : 'No crops';
+  $('#prevCropBtn').disabled = activeCropIndex <= 0;
+  $('#nextCropBtn').disabled = activeCropIndex >= crops.length - 1;
+}
 
 function clampPct(value) {
   return Math.min(100, Math.max(0, num(value)));
@@ -312,6 +464,7 @@ function syncCropCardsToCount() {
     const all = $$('.crop-card');
     all[all.length - 1].remove();
   }
+  setActiveCrop(Math.min(activeCropIndex, $$('.crop-card').length - 1));
   calculateAll();
 }
 
@@ -329,13 +482,17 @@ function addCrop(name = '', acres = '') {
     calculateAll();
   });
   $('.remove-crop', crop).addEventListener('click', () => {
+    const removedIndex = $$('.crop-card').indexOf(crop);
     crop.remove();
     $('#cropCount').value = String(Math.max(1, $$('.crop-card').length));
+    activeCropIndex = Math.min(removedIndex, Math.max(0, $$('.crop-card').length - 1));
+    setActiveCrop(activeCropIndex);
     calculateAll();
   });
   crop.addEventListener('input', calculateAll);
   crop.addEventListener('change', calculateAll);
   $('#crops').appendChild(crop);
+  setActiveCrop($$('.crop-card').length - 1);
   calculateAll();
 }
 
@@ -409,11 +566,11 @@ function calculateAll() {
   tileWrap.innerHTML = '';
   cropTiles.forEach(tile => {
     const el = document.createElement('div');
-    el.className = 'metric';
-    el.innerHTML = `<div class="crop-name-tile"></div><div class="label">Total AI</div><div class="value">${fmt(tile.cropAITotal, 4)}</div><div class="small">${fmt(tile.cropAIperAcre, 4)} / acre · ${tile.cropEntries} entries</div>`;
-    $('.crop-name-tile', el).textContent = tile.cropName;
+    el.className = 'crop-mini-pill';
+    el.textContent = `${tile.cropName}: ${fmt(tile.cropAITotal, 2)} AI · ${tile.cropEntries} entries`;
     tileWrap.appendChild(el);
   });
+  renderCropNavigation();
 }
 
 function csvEscape(value) {
@@ -501,6 +658,8 @@ $('#addCropBtn').addEventListener('click', () => {
   $('#cropCount').value = String(next);
   addCrop(`Crop ${next}`, '');
 });
+$('#prevCropBtn').addEventListener('click', () => setActiveCrop(activeCropIndex - 1));
+$('#nextCropBtn').addEventListener('click', () => setActiveCrop(activeCropIndex + 1));
 $('#exportCsvBtn').addEventListener('click', exportCsv);
 ['farmName', 'state', 'totalAcres', 'preparedBy'].forEach(id => {
   $(`#${id}`).addEventListener('input', calculateAll);
