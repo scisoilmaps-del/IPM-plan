@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>SCI IPM Inputs Tool</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --sci-earth: #3D2F1E;
+  --sci-clay: #A8551F;
+  --sci-leaf: #3F5C3A;
+  --sci-leaf-deep: #2B4028;
+  --sci-line: #DED3BB;
+  --sci-soft: #FBF8F1;
+  --sci-muted: #6B6458;
+  --sci-ink: #1C1A16;
+  --warn-bg: #FFF3D6;
+  --white: #fff;
+}
+* { box-sizing: border-box; }
+html, body {
+  margin: 0;
+  background: transparent;
+  color: var(--sci-ink);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  line-height: 1.45;
+  font-size: 13px;
+}
+button, input, select, textarea { font: inherit; }
+.page { width: 100%; max-width: 100%; margin: 0; padding: 8px; }
+.card, .crop-card {
+  background: var(--white);
+  border: 1px solid var(--sci-line);
+  border-radius: 14px;
+  padding: 14px;
+  margin-bottom: 10px;
+}
+.card-title, .section-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+.section-title { margin-top: 12px; margin-bottom: 8px; }
+h2, h3, h4 {
+  margin: 0;
+  color: var(--sci-earth);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-weight: 800;
+  letter-spacing: -.01em;
+}
+h2 { font-size: 17px; }
+h3 { font-size: 15px; }
+h4 { font-size: 13px; }
+.help { color: var(--sci-muted); font-size: 11px; margin-top: 2px; }
+.input-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+.field { display: flex; flex-direction: column; gap: 6px; }
+label, .label {
+  color: var(--sci-muted);
+  font-size: 9.5px;
+  font-weight: 800;
+  letter-spacing: .11em;
+  text-transform: uppercase;
+}
+input, select, textarea {
+  width: 100%;
+  min-height: 38px;
+  border: 1px solid var(--sci-line);
+  border-radius: 10px;
+  background: #fff;
+  color: var(--sci-ink);
+  padding: 8px 10px;
+  outline: none;
+}
+textarea { min-height: 38px; resize: vertical; }
+input:focus, select:focus, textarea:focus { border-color: var(--sci-clay); box-shadow: 0 0 0 3px rgba(168,85,31,.12); }
+.actions { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.btn {
+  border: 0;
+  border-radius: 10px;
+  padding: 8px 12px;
+  color: #fff;
+  background: var(--sci-leaf-deep);
+  cursor: pointer;
+  font-weight: 800;
+  font-size: 12px;
+  white-space: nowrap;
+}
+.btn:hover { filter: brightness(.98); }
+.btn.secondary { background: var(--sci-clay); }
+.btn.ghost { background: #fff; color: var(--sci-earth); border: 1px solid var(--sci-line); }
+.btn.danger { background: #8D3B1F; }
+.btn:disabled { opacity: .5; cursor: not-allowed; }
+.summary-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(120px, 1fr));
+  gap: 6px;
+}
+.metric {
+  background: #fff;
+  border: 1px solid var(--sci-line);
+  border-radius: 10px;
+  padding: 8px;
+}
+.metric .label { margin-bottom: 4px; }
+.metric .value { font-size: 15px; font-weight: 850; color: var(--sci-earth); letter-spacing: -.03em; }
+.metric .small { font-size: 11px; color: var(--sci-muted); margin-top: 1px; }
+.crop-name-tile { color: var(--sci-earth); font-weight: 850; font-size: 12px; margin-bottom: 2px; }
+.crop-head {
+  display: grid;
+  grid-template-columns: minmax(180px, 1.2fr) minmax(115px, .55fr) auto;
+  gap: 10px;
+  align-items: end;
+  padding: 12px;
+  margin: -14px -14px 10px;
+  background: var(--sci-soft);
+  border-bottom: 1px solid var(--sci-line);
+  border-radius: 14px 14px 0 0;
+}
+.crop-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  margin-bottom: 8px;
+}
+.stat { border: 1px solid var(--sci-line); background: #fff; border-radius: 10px; padding: 8px; }
+.stat .value { font-size: 16px; font-weight: 850; color: var(--sci-leaf-deep); }
+.table-wrap { overflow-x: auto; border-radius: 10px; border: 1px solid #EFE7D7; }
+table { width: 100%; border-collapse: separate; border-spacing: 0; min-width: 1120px; }
+th {
+  text-align: left;
+  color: var(--sci-earth);
+  background: #F4EBD9;
+  font-size: 9.5px;
+  letter-spacing: .075em;
+  text-transform: uppercase;
+  border-bottom: 1px solid var(--sci-line);
+  padding: 7px;
+  white-space: nowrap;
+}
+td { border-bottom: 1px solid #EFE7D7; padding: 5px; vertical-align: middle; background: #fff; }
+tbody tr:nth-child(even) td { background: #FDFBF7; }
+td input, td select, td textarea { min-height: 32px; padding: 5px 7px; border-radius: 8px; }
+.readonly { color: var(--sci-earth); font-weight: 800; white-space: nowrap; }
+.crop-actions, .row-actions { padding-top: 8px; display: flex; gap: 8px; flex-wrap: wrap; }
+.note {
+  border-left: 4px solid var(--sci-clay);
+  background: var(--warn-bg);
+  color: var(--sci-earth);
+  padding: 9px 11px;
+  border-radius: 10px;
+  font-size: 12px;
+  margin-bottom: 8px;
+}
+.hidden { display: none !important; }
+@media (max-width: 760px) {
+  .page { padding: 6px; }
+  .input-grid, .summary-grid, .crop-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .crop-head { grid-template-columns: 1fr 1fr; }
+  .remove-crop { grid-column: 1 / -1; justify-self: start; }
+}
+@media (max-width: 480px) {
+  .input-grid, .summary-grid, .crop-stats, .crop-head { grid-template-columns: 1fr; }
+  .card-title, .section-title { flex-direction: column; }
+}
+</style>
+</head>
+<body>
+<div class="page">
+  <section class="card">
+    <div class="card-title">
+      <div><h2>Farm Details</h2><div class="help">Enter farm acres, choose the number of crops, then add IPM applications for weeds or pests.</div></div>
+      <div class="actions"><button class="btn secondary" id="exportCsvBtn" type="button">Export CSV</button></div>
+    </div>
+    <div class="input-grid">
+      <div class="field"><label for="farmName">Farm Name</label><input id="farmName" placeholder="Example: ABC Farm" /></div>
+      <div class="field"><label for="state">State</label><select id="state"><option value="">Select state</option><option>Alabama</option><option>Alaska</option><option>Arizona</option><option>Arkansas</option><option>California</option><option>Colorado</option><option>Connecticut</option><option>Delaware</option><option>Florida</option><option>Georgia</option><option>Hawaii</option><option>Idaho</option><option>Illinois</option><option>Indiana</option><option>Iowa</option><option>Kansas</option><option>Kentucky</option><option>Louisiana</option><option>Maine</option><option>Maryland</option><option>Massachusetts</option><option>Michigan</option><option>Minnesota</option><option>Mississippi</option><option>Missouri</option><option>Montana</option><option>Nebraska</option><option>Nevada</option><option>New Hampshire</option><option>New Jersey</option><option>New Mexico</option><option>New York</option><option>North Carolina</option><option>North Dakota</option><option>Ohio</option><option>Oklahoma</option><option>Oregon</option><option>Pennsylvania</option><option>Rhode Island</option><option>South Carolina</option><option>South Dakota</option><option>Tennessee</option><option>Texas</option><option>Utah</option><option>Vermont</option><option>Virginia</option><option>Washington</option><option>West Virginia</option><option>Wisconsin</option><option>Wyoming</option></select></div>
+      <div class="field"><label for="totalAcres">Total Acres</label><input id="totalAcres" type="number" min="0" step="0.01" placeholder="0" /></div>
+      <div class="field"><label for="preparedBy">Prepared By</label><input id="preparedBy" placeholder="Optional" /></div>
+      <div class="field"><label for="cropCount">Number of Crops</label><input id="cropCount" type="number" min="1" max="10" step="1" value="1" /></div>
+    </div>
+  </section>
+
+  <section class="card">
+    <div class="card-title">
+      <div><h2>Quick Summary</h2><div class="help">Active ingredient is calculated as Amount / Acre × % Active Ingredient. Crop total is Active Ingredient / Acre × Crop Acres.</div></div>
+      <div class="actions"><button class="btn ghost" id="addCropBtn" type="button">Add Crop</button></div>
+    </div>
+    <div id="acreWarning" class="note hidden"></div>
+    <div class="summary-grid">
+      <div class="metric"><div class="label">Crop Acres Entered</div><div class="value" id="sumCropAcres">0.00</div><div class="small">Sum of crop acres</div></div>
+      <div class="metric"><div class="label">Remaining Acres</div><div class="value" id="remainingAcres">0.00</div><div class="small">Total acres minus crop acres</div></div>
+      <div class="metric"><div class="label">IPM Entries</div><div class="value" id="farmEntries">0</div><div class="small">Total applications entered</div></div>
+      <div class="metric"><div class="label">Total Active Ingredient</div><div class="value" id="farmTotalAI">0.00</div><div class="small">Across crop acres</div></div>
+    </div>
+    <div style="margin-top:10px"><div class="label" style="margin-bottom:6px">Active Ingredient Per Crop</div><div class="summary-grid" id="cropAITiles"></div></div>
+  </section>
+
+  <main id="crops"></main>
+</div>
+
+<template id="cropTemplate">
+  <section class="crop-card" data-crop-id="">
+    <div class="crop-head">
+      <div class="field"><label>Crop Name</label><input class="crop-name" placeholder="Corn, soybeans, wheat..." /></div>
+      <div class="field"><label>Crop Acres</label><input class="crop-acres" type="number" min="0" step="0.01" placeholder="0" /></div>
+      <button class="btn danger remove-crop" type="button">Remove Crop</button>
+    </div>
+    <div class="crop-stats">
+      <div class="stat"><div class="label">AI / Acre</div><div class="value crop-ai-acre">0.00</div></div>
+      <div class="stat"><div class="label">Total AI</div><div class="value crop-ai-total">0.00</div></div>
+      <div class="stat"><div class="label">IPM Entries</div><div class="value crop-products">0</div></div>
+      <div class="stat"><div class="label">Crop Acres</div><div class="value crop-acres-stat">0.00</div></div>
+    </div>
+
+    <div class="section-title">
+      <div><h3>IPM Applications</h3><div class="help">Use the product label rate as Amount / Acre and enter active ingredient as a percentage, such as 41 for 41%.</div></div>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Application Date</th>
+            <th style="width:170px">Weed or Pest</th>
+            <th style="width:170px">Product Name</th>
+            <th>Unit</th>
+            <th>Amount / Acre</th>
+            <th>% Active Ingredient</th>
+            <th>Active Ingredient / Acre</th>
+            <th>Total Active Ingredient</th>
+            <th>Notes</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody class="ipm-body"></tbody>
+      </table>
+    </div>
+    <div class="crop-actions"><button class="btn ghost add-ipm" type="button">Add IPM Entry</button></div>
+  </section>
+</template>
+
+<template id="ipmTemplate">
+  <tr class="ipm-row">
+    <td><input class="application-date" type="date" /></td>
+    <td><input class="pest" placeholder="Grass, broadleaf, insect..." /></td>
+    <td><input class="product-name" placeholder="Product name" /></td>
+    <td><select class="product-unit"><option>Fluid oz</option><option>Pints</option><option>Quarts</option><option>Gallons</option><option>oz</option><option>lbs</option><option>Tons</option></select></td>
+    <td><input class="amount-acre" type="number" min="0" step="0.001" placeholder="0" /></td>
+    <td><input class="active-pct" type="number" min="0" max="100" step="0.01" placeholder="0" /></td>
+    <td class="readonly ai-acre">0.00</td>
+    <td class="readonly ai-total">0.00</td>
+    <td><input class="notes" placeholder="Optional" /></td>
+    <td><button class="btn danger remove-ipm" type="button">×</button></td>
+  </tr>
+</template>
+
+<script>
+const MAX_CROPS = 10;
+let cropCounter = 0;
+
+const $ = (sel, root = document) => root.querySelector(sel);
+const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
+const num = v => Number.isFinite(parseFloat(v)) ? parseFloat(v) : 0;
+const fmt = (n, d = 2) => Number.isFinite(n) ? n.toFixed(d) : (0).toFixed(d);
+
+function clampPct(value) {
+  return Math.min(100, Math.max(0, num(value)));
+}
+
+function createIpmRow() {
+  const row = $('#ipmTemplate').content.firstElementChild.cloneNode(true);
+  row.addEventListener('input', calculateAll);
+  row.addEventListener('change', calculateAll);
+  $('.remove-ipm', row).addEventListener('click', () => {
+    const body = row.closest('.ipm-body');
+    if ($$('.ipm-row', body).length > 1) row.remove();
+    else clearRow(row);
+    calculateAll();
+  });
+  return row;
+}
+
+function clearRow(row) {
+  $$('input, textarea', row).forEach(input => input.value = '');
+  $$('select', row).forEach(select => select.selectedIndex = 0);
+}
+
+function desiredCropCount() {
+  const input = $('#cropCount');
+  let count = Math.round(num(input.value));
+  if (!count || count < 1) count = 1;
+  if (count > MAX_CROPS) count = MAX_CROPS;
+  input.value = String(count);
+  return count;
+}
+
+function syncCropCardsToCount() {
+  const target = desiredCropCount();
+  while ($$('.crop-card').length < target) {
+    const next = $$('.crop-card').length + 1;
+    addCrop(`Crop ${next}`, '');
+  }
+  while ($$('.crop-card').length > target) {
+    const all = $$('.crop-card');
+    all[all.length - 1].remove();
+  }
+  calculateAll();
+}
+
+function addCrop(name = '', acres = '') {
+  if ($$('.crop-card').length >= MAX_CROPS) return;
+  cropCounter++;
+  const crop = $('#cropTemplate').content.firstElementChild.cloneNode(true);
+  crop.dataset.cropId = String(cropCounter);
+  $('.crop-name', crop).value = name;
+  $('.crop-acres', crop).value = acres;
+  $('.ipm-body', crop).appendChild(createIpmRow());
+
+  $('.add-ipm', crop).addEventListener('click', () => {
+    $('.ipm-body', crop).appendChild(createIpmRow());
+    calculateAll();
+  });
+  $('.remove-crop', crop).addEventListener('click', () => {
+    crop.remove();
+    $('#cropCount').value = String(Math.max(1, $$('.crop-card').length));
+    calculateAll();
+  });
+  crop.addEventListener('input', calculateAll);
+  crop.addEventListener('change', calculateAll);
+  $('#crops').appendChild(crop);
+  calculateAll();
+}
+
+function getIpmData(crop, row) {
+  const cropName = $('.crop-name', crop).value.trim();
+  const cropAcres = num($('.crop-acres', crop).value);
+  const applicationDate = $('.application-date', row).value;
+  const pest = $('.pest', row).value.trim();
+  const productName = $('.product-name', row).value.trim();
+  const productUnit = $('.product-unit', row).value;
+  const amountPerAcre = num($('.amount-acre', row).value);
+  const activePct = clampPct($('.active-pct', row).value);
+  const activeIngredientPerAcre = amountPerAcre * (activePct / 100);
+  const totalActiveIngredient = activeIngredientPerAcre * cropAcres;
+  const notes = $('.notes', row).value.trim();
+  const hasEntry = applicationDate || pest || productName || amountPerAcre > 0 || activePct > 0 || notes;
+  return { cropName, cropAcres, applicationDate, pest, productName, productUnit, amountPerAcre, activePct, activeIngredientPerAcre, totalActiveIngredient, notes, hasEntry };
+}
+
+function calculateAll() {
+  const totalAcres = num($('#totalAcres').value);
+  let cropAcresTotal = 0;
+  let farmTotalAI = 0;
+  let farmEntries = 0;
+  const cropTiles = [];
+
+  $$('.crop-card').forEach((crop, idx) => {
+    const cropName = $('.crop-name', crop).value.trim() || `Crop ${idx + 1}`;
+    const cropAcres = num($('.crop-acres', crop).value);
+    cropAcresTotal += cropAcres;
+    let cropAIperAcre = 0;
+    let cropAITotal = 0;
+    let cropEntries = 0;
+
+    $$('.ipm-row', crop).forEach(row => {
+      const data = getIpmData(crop, row);
+      $('.ai-acre', row).textContent = fmt(data.activeIngredientPerAcre, 4);
+      $('.ai-total', row).textContent = fmt(data.totalActiveIngredient, 4);
+      if (data.hasEntry) cropEntries++;
+      cropAIperAcre += data.activeIngredientPerAcre;
+      cropAITotal += data.totalActiveIngredient;
+    });
+
+    farmTotalAI += cropAITotal;
+    farmEntries += cropEntries;
+    $('.crop-ai-acre', crop).textContent = fmt(cropAIperAcre, 4);
+    $('.crop-ai-total', crop).textContent = fmt(cropAITotal, 4);
+    $('.crop-products', crop).textContent = String(cropEntries);
+    $('.crop-acres-stat', crop).textContent = fmt(cropAcres, 2);
+
+    cropTiles.push({ cropName, cropAcres, cropAIperAcre, cropAITotal, cropEntries });
+  });
+
+  const remaining = totalAcres - cropAcresTotal;
+  $('#sumCropAcres').textContent = fmt(cropAcresTotal, 2);
+  $('#remainingAcres').textContent = fmt(remaining, 2);
+  $('#farmEntries').textContent = String(farmEntries);
+  $('#farmTotalAI').textContent = fmt(farmTotalAI, 4);
+
+  const warning = $('#acreWarning');
+  if (totalAcres > 0 && Math.abs(remaining) > 0.01) {
+    warning.textContent = remaining < 0
+      ? `Crop acres exceed total acres by ${fmt(Math.abs(remaining), 2)} acres.`
+      : `${fmt(remaining, 2)} acres remain unassigned to crops.`;
+    warning.classList.remove('hidden');
+  } else {
+    warning.classList.add('hidden');
+  }
+
+  const tileWrap = $('#cropAITiles');
+  tileWrap.innerHTML = '';
+  cropTiles.forEach(tile => {
+    const el = document.createElement('div');
+    el.className = 'metric';
+    el.innerHTML = `<div class="crop-name-tile"></div><div class="label">Total AI</div><div class="value">${fmt(tile.cropAITotal, 4)}</div><div class="small">${fmt(tile.cropAIperAcre, 4)} / acre · ${tile.cropEntries} entries</div>`;
+    $('.crop-name-tile', el).textContent = tile.cropName;
+    tileWrap.appendChild(el);
+  });
+}
+
+function csvEscape(value) {
+  const str = String(value ?? '');
+  if (/[",\n]/.test(str)) return `"${str.replace(/"/g, '""')}"`;
+  return str;
+}
+
+function exportCsv() {
+  calculateAll();
+  const farmName = $('#farmName').value.trim();
+  const state = $('#state').value;
+  const totalAcres = $('#totalAcres').value;
+  const preparedBy = $('#preparedBy').value.trim();
+
+  const rows = [[
+    'Farm Name',
+    'State',
+    'Total Farm Acres',
+    'Prepared By',
+    'Crop',
+    'Crop Acres',
+    'Application Date',
+    'Weed or Pest',
+    'Product Name',
+    'Unit',
+    'Amount per Acre',
+    'Percent Active Ingredient',
+    'Active Ingredient per Acre',
+    'Total Active Ingredient over Crop Acres',
+    'Notes'
+  ]];
+
+  $$('.crop-card').forEach((crop, idx) => {
+    const cropName = $('.crop-name', crop).value.trim() || `Crop ${idx + 1}`;
+    const cropAcres = num($('.crop-acres', crop).value);
+    let addedRow = false;
+
+    $$('.ipm-row', crop).forEach(row => {
+      const data = getIpmData(crop, row);
+      if (!data.hasEntry) return;
+      rows.push([
+        farmName,
+        state,
+        totalAcres,
+        preparedBy,
+        cropName,
+        fmt(cropAcres, 2),
+        data.applicationDate,
+        data.pest,
+        data.productName,
+        data.productUnit,
+        fmt(data.amountPerAcre, 3),
+        fmt(data.activePct, 2),
+        fmt(data.activeIngredientPerAcre, 4),
+        fmt(data.totalActiveIngredient, 4),
+        data.notes
+      ]);
+      addedRow = true;
+    });
+
+    if (!addedRow && (cropName || cropAcres > 0)) {
+      rows.push([farmName, state, totalAcres, preparedBy, cropName, fmt(cropAcres, 2), '', '', '', '', '', '', '', '', '']);
+    }
+  });
+
+  const csv = rows.map(row => row.map(csvEscape).join(',')).join('\n');
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  const safeName = (farmName || 'ipm_inputs').replace(/[^a-z0-9-_]+/gi, '_').replace(/^_+|_+$/g, '');
+  a.href = url;
+  a.download = `${safeName || 'ipm_inputs'}_ipm_inputs.csv`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+$('#cropCount').addEventListener('change', syncCropCardsToCount);
+$('#cropCount').addEventListener('input', syncCropCardsToCount);
+$('#addCropBtn').addEventListener('click', () => {
+  if ($$('.crop-card').length >= MAX_CROPS) return;
+  const next = $$('.crop-card').length + 1;
+  $('#cropCount').value = String(next);
+  addCrop(`Crop ${next}`, '');
+});
+$('#exportCsvBtn').addEventListener('click', exportCsv);
+['farmName', 'state', 'totalAcres', 'preparedBy'].forEach(id => {
+  $(`#${id}`).addEventListener('input', calculateAll);
+  $(`#${id}`).addEventListener('change', calculateAll);
+});
+
+syncCropCardsToCount();
+</script>
+</body>
+</html>
