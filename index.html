@@ -606,7 +606,7 @@ table td:nth-child(7), table td:nth-child(8) { display: none !important; }
         <div class="field full"><label for="farmName">Farm Name</label><input id="farmName" placeholder="Example: ABC Farm" /></div>
         <div class="field"><label for="state">State</label><select id="state"><option value="">Select state</option><option>Alabama</option><option>Alaska</option><option>Arizona</option><option>Arkansas</option><option>California</option><option>Colorado</option><option>Connecticut</option><option>Delaware</option><option>Florida</option><option>Georgia</option><option>Hawaii</option><option>Idaho</option><option>Illinois</option><option>Indiana</option><option>Iowa</option><option>Kansas</option><option>Kentucky</option><option>Louisiana</option><option>Maine</option><option>Maryland</option><option>Massachusetts</option><option>Michigan</option><option>Minnesota</option><option>Mississippi</option><option>Missouri</option><option>Montana</option><option>Nebraska</option><option>Nevada</option><option>New Hampshire</option><option>New Jersey</option><option>New Mexico</option><option>New York</option><option>North Carolina</option><option>North Dakota</option><option>Ohio</option><option>Oklahoma</option><option>Oregon</option><option>Pennsylvania</option><option>Rhode Island</option><option>South Carolina</option><option>South Dakota</option><option>Tennessee</option><option>Texas</option><option>Utah</option><option>Vermont</option><option>Virginia</option><option>Washington</option><option>West Virginia</option><option>Wisconsin</option><option>Wyoming</option></select></div>
         <div class="field"><label for="totalAcres">Total Acres</label><input id="totalAcres" type="number" min="0" step="0.01" placeholder="0" inputmode="decimal" /></div>
-        <div class="field"><label for="cropCount">Number of Crops</label><input id="cropCount" type="number" min="1" max="10" step="1" value="1" inputmode="numeric" /></div>
+        <div class="field"><label for="cropCount">Number of Crops</label><input id="cropCount" type="number" min="1" max="10" step="1" placeholder="" inputmode="numeric" /></div>
         <div class="field"><label for="preparedBy">Prepared By</label><input id="preparedBy" placeholder="Optional" /></div>
       </div>
     </section>
@@ -794,7 +794,7 @@ function validateSetup() {
   if (!$('#farmName').value.trim()) return { ok:false, message:'Add the farm name before continuing.', el:$('#farmName') };
   if (!$('#state').value) return { ok:false, message:'Select the state before continuing.', el:$('#state') };
   if (num($('#totalAcres').value) <= 0) return { ok:false, message:'Add total farm acres before continuing.', el:$('#totalAcres') };
-  if (desiredCropCount() < 1) return { ok:false, message:'Add at least one crop.', el:$('#cropCount') };
+  if (!$('#cropCount').value.trim() || desiredCropCount(false) < 1) return { ok:false, message:'Add the number of crops before continuing.', el:$('#cropCount') };
   return { ok:true, message:'' };
 }
 function validateJourney() {
@@ -917,17 +917,20 @@ function renderCropNavigation() {
   $('#nextCropBtn').disabled = activeCropIndex >= crops.length - 1;
 }
 
-function desiredCropCount() {
+function desiredCropCount(writeValue = true) {
   const input = $('#cropCount');
-  let count = Math.round(num(input.value));
+  const raw = input.value.trim();
+  if (!raw) return 0;
+  let count = Math.round(num(raw));
   if (!count || count < 1) count = 1;
   if (count > MAX_CROPS) count = MAX_CROPS;
-  input.value = String(count);
+  if (writeValue) input.value = String(count);
   return count;
 }
 
 function syncCropCardsToCount() {
   const target = desiredCropCount();
+  if (target < 1) { setActiveCrop(0); return; }
   while ($$('.crop-card').length < target) addCrop(`Crop ${$$('.crop-card').length + 1}`, '');
   while ($$('.crop-card').length > target) {
     const all = $$('.crop-card');
@@ -948,7 +951,7 @@ function addCrop(name = '', acres = '') {
   $('.remove-crop', crop).addEventListener('click', () => {
     const removedIndex = $$('.crop-card').indexOf(crop);
     crop.remove();
-    $('#cropCount').value = String(Math.max(1, $$('.crop-card').length));
+    $('#cropCount').value = $$('.crop-card').length ? String($$('.crop-card').length) : '';
     activeCropIndex = Math.min(removedIndex, Math.max(0, $$('.crop-card').length - 1));
     setActiveCrop(activeCropIndex);
     calculateAll();
@@ -1074,7 +1077,7 @@ function exportCsv() {
 }
 
 $('#cropCount').addEventListener('change', syncCropCardsToCount);
-$('#cropCount').addEventListener('input', syncCropCardsToCount);
+$('#cropCount').addEventListener('input', () => { if ($('#cropCount').value.trim()) syncCropCardsToCount(); });
 $('#addCropBtn').addEventListener('click', () => {
   if ($$('.crop-card').length >= MAX_CROPS) return;
   const next = $$('.crop-card').length + 1;
@@ -1088,7 +1091,7 @@ $('#exportCsvBtn').addEventListener('click', exportCsv);
   $(`#${id}`).addEventListener('input', calculateAll);
   $(`#${id}`).addEventListener('change', calculateAll);
 });
-syncCropCardsToCount();
+setActiveCrop(0);
 function goTo(name) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   const screen = document.getElementById('screen-' + name);
