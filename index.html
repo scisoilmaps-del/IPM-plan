@@ -825,7 +825,38 @@ thead {
     gap: 4px !important;
     padding: 5px !important;
   }
-  .ipm-summary,
+  /* Keep the collapsed IPM header readable on phones. Do not force this
+     two-line summary into the same 26px height as form inputs. */
+  .ipm-summary {
+    min-height: 42px !important;
+    height: auto !important;
+    align-items: center !important;
+    gap: 6px !important;
+    padding: 6px 7px !important;
+  }
+  .ipm-summary > div:first-child {
+    min-width: 0 !important;
+    flex: 1 1 auto !important;
+  }
+  .ipm-summary-title {
+    font-size: 12px !important;
+    line-height: 1.15 !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
+  .ipm-summary-sub {
+    display: block !important;
+    margin-top: 2px !important;
+    font-size: 9.5px !important;
+    line-height: 1.2 !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
+  .ipm-summary-actions {
+    flex: 0 0 auto !important;
+  }
   .ipm-summary-actions .btn,
   .remove-ipm,
   .ipm-row td input,
