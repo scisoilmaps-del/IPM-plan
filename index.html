@@ -1633,23 +1633,91 @@ function exportCsv() {
   const check = validateJourney();
   if (!check.ok) { showSummaryQA(check.message); goTo('crops'); showCropQA(check.message); if (check.el) check.el.scrollIntoView({behavior:'smooth', block:'center'}); return; }
   showSummaryQA('CSV downloaded.');
+
   const farmName = $('#farmName').value.trim();
   const state = $('#state').value;
+  const totalAcresNum = num($('#totalAcres').value);
   const totalAcres = $('#totalAcres').value;
   const preparedBy = $('#preparedBy').value.trim();
-  const rows = [['Farm Name','State','Total Farm Acres','Prepared By','Crop','Crop Acres','Application Date','Weed or Pest','Product Name','Unit','Amount per Acre','Percent Active Ingredient (%)','Active Ingredient per Acre','Total Active Ingredient over Crop Acres','Notes']];
+  const cropAcresEntered = num($('#sumCropAcres').textContent);
+  const remainingAcres = totalAcresNum - cropAcresEntered;
+
+  let farmTotalAI = 0;
+  let farmEntryCount = 0;
+  $$('.crop-card').forEach(crop => {
+    $$('.ipm-row', crop).forEach(row => {
+      const data = getIpmData(crop, row);
+      if (!data.hasEntry) return;
+      farmTotalAI += data.totalActiveIngredient;
+      farmEntryCount += 1;
+    });
+  });
+  const farmAvgAIPerAcre = totalAcresNum > 0 ? farmTotalAI / totalAcresNum : 0;
+
+  const rows = [
+    ['IPM Input Summary'],
+    ['Farm Name', farmName],
+    ['State', state],
+    ['Prepared By', preparedBy],
+    ['Total Farm Acres', totalAcres],
+    ['Crop Acres Entered', fmt(cropAcresEntered, 2)],
+    ['Remaining Acres', fmt(remainingAcres, 2)],
+    ['Farm Total Active Ingredient', fmt(farmTotalAI, 4)],
+    ['Farm Avg Active Ingredient/Acre', fmt(farmAvgAIPerAcre, 4)],
+    ['Farm IPM Application Count', farmEntryCount],
+    [],
+    [
+      'Farm Name',
+      'State',
+      'Input Category',
+      'Crop Name',
+      'Crop Acres',
+      'Application Date',
+      'Weed Or Pest',
+      'Product Name',
+      'Rate Per Acre',
+      'Unit',
+      'Percent Active Ingredient',
+      'Active Ingredient Decimal',
+      'Active Ingredient / Acre',
+      'Total Active Ingredient For Crop Acres',
+      'Notes'
+    ]
+  ];
+
   $$('.crop-card').forEach((crop, idx) => {
     const cropName = $('.crop-name', crop).value.trim() || `Crop ${idx + 1}`;
     const cropAcres = num($('.crop-acres', crop).value);
     let addedRow = false;
+
     $$('.ipm-row', crop).forEach(row => {
       const data = getIpmData(crop, row);
       if (!data.hasEntry) return;
-      rows.push([farmName, state, totalAcres, preparedBy, cropName, fmt(cropAcres, 2), data.applicationDate, data.pest, data.productName, data.productUnit, fmt(data.amountPerAcre, 3), fmt(data.activePct, 2), fmt(data.activeIngredientPerAcre, 4), fmt(data.totalActiveIngredient, 4), data.notes]);
+      rows.push([
+        farmName,
+        state,
+        'IPM Product',
+        cropName,
+        cropAcres,
+        data.applicationDate,
+        data.pest,
+        data.productName,
+        data.amountPerAcre,
+        data.productUnit,
+        data.activePct,
+        data.activePctDecimal,
+        data.activeIngredientPerAcre,
+        data.totalActiveIngredient,
+        data.notes
+      ]);
       addedRow = true;
     });
-    if (!addedRow && (cropName || cropAcres > 0)) rows.push([farmName, state, totalAcres, preparedBy, cropName, fmt(cropAcres, 2), '', '', '', '', '', '', '', '', '']);
+
+    if (!addedRow && (cropName || cropAcres > 0)) {
+      rows.push([farmName, state, 'Crop With No IPM Entry', cropName, cropAcres, '', '', '', '', '', '', '', '', '', '']);
+    }
   });
+
   const csv = rows.map(row => row.map(csvEscape).join(',')).join('\n');
   const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
   const url = URL.createObjectURL(blob);
@@ -1663,7 +1731,7 @@ function exportCsv() {
   URL.revokeObjectURL(url);
 }
 
-$('#cropCount').addEventListener('change', syncCropCardsToCount);
+$('#cropCount' ).addEventListener('change', syncCropCardsToCount);
 $('#cropCount').addEventListener('input', () => { if ($('#cropCount').value.trim()) syncCropCardsToCount(); });
 const addCropBtn = $('#addCropBtn');
 if (addCropBtn) {
