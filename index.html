@@ -570,6 +570,425 @@ table td:nth-child(7), table td:nth-child(8) { display: none !important; }
   .ipm-summary { align-items: flex-start; }
 }
 
+
+/* TIGHT IPM ENTRY MODE - reduces scrolling in phone and iframe desktop */
+.content-wide {
+  max-width: 1180px !important;
+  padding: 6px 6px 10px !important;
+}
+.crop-page-shell {
+  padding: 7px !important;
+  margin-bottom: 6px !important;
+  border-radius: 10px !important;
+}
+.crop-page-top {
+  gap: 5px !important;
+  margin-bottom: 5px !important;
+}
+.crop-tab,
+.crop-page-controls .btn {
+  min-height: 28px !important;
+  height: 28px !important;
+  padding: 3px 8px !important;
+  font-size: 11px !important;
+  border-radius: 8px !important;
+}
+.crop-page-count {
+  font-size: 11px !important;
+}
+.crop-card {
+  padding: 7px !important;
+  border-radius: 10px !important;
+}
+.crop-head {
+  grid-template-columns: minmax(160px, 1.3fr) minmax(90px, .55fr) auto !important;
+  gap: 6px !important;
+  align-items: end !important;
+  padding: 6px !important;
+  margin: -7px -7px 6px !important;
+  border-radius: 10px 10px 0 0 !important;
+}
+.crop-head .field {
+  gap: 2px !important;
+}
+.crop-head label,
+.ipm-row label,
+td::before {
+  font-size: 7px !important;
+  letter-spacing: .06em !important;
+  margin-bottom: 2px !important;
+}
+.crop-head input,
+.crop-head select,
+.crop-head .btn,
+input, select, textarea {
+  min-height: 28px !important;
+  height: 28px !important;
+  padding: 3px 8px !important;
+  font-size: 13px !important;
+  border-radius: 7px !important;
+}
+.remove-crop {
+  min-height: 28px !important;
+  height: 28px !important;
+  padding: 3px 10px !important;
+  font-size: 11px !important;
+  border-radius: 7px !important;
+}
+.optional-bar {
+  padding: 5px 7px !important;
+  margin: 0 0 5px 0 !important;
+  border-radius: 8px !important;
+  gap: 6px !important;
+}
+.optional-bar .help {
+  font-size: 10.5px !important;
+  line-height: 1.15 !important;
+}
+.optional-bar .btn,
+.optional-panel-head .btn {
+  min-height: 28px !important;
+  height: 28px !important;
+  padding: 3px 10px !important;
+  font-size: 11px !important;
+  border-radius: 7px !important;
+}
+.optional-panel {
+  margin-top: 5px !important;
+  border-radius: 9px !important;
+}
+.optional-panel-head {
+  padding: 5px 7px !important;
+  align-items: center !important;
+}
+.optional-panel-head h3 {
+  font-size: 13px !important;
+  line-height: 1 !important;
+}
+.optional-panel-head .help {
+  display: none !important;
+}
+.table-wrap {
+  overflow: visible !important;
+}
+table, thead, tbody, tr, th, td {
+  width: auto !important;
+}
+table {
+  min-width: 0 !important;
+}
+thead {
+  display: none !important;
+}
+.ipm-body {
+  display: block !important;
+}
+.ipm-row {
+  display: grid !important;
+  grid-template-columns: minmax(116px, .8fr) minmax(130px, 1fr) minmax(145px, 1fr) minmax(98px, .7fr) minmax(90px, .6fr) minmax(105px, .7fr) minmax(140px, 1fr) auto !important;
+  gap: 5px !important;
+  padding: 6px !important;
+  margin-bottom: 5px !important;
+  border: 1px solid var(--sci-line) !important;
+  border-radius: 9px !important;
+  background: #fff !important;
+}
+.ipm-row td {
+  display: flex !important;
+  flex-direction: column !important;
+  padding: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+  min-width: 0 !important;
+}
+.ipm-row td::before {
+  display: block !important;
+  line-height: 1 !important;
+}
+.ipm-row td input,
+.ipm-row td select {
+  min-height: 28px !important;
+  height: 28px !important;
+  padding: 3px 7px !important;
+  font-size: 13px !important;
+  border-radius: 7px !important;
+}
+.ipm-row .readonly {
+  min-height: 28px !important;
+  height: 28px !important;
+  padding: 6px 7px !important;
+  font-size: 12px !important;
+  border: 1px solid #EFE7D7 !important;
+  border-radius: 7px !important;
+  background: #FDFBF7 !important;
+}
+.ipm-summary-cell {
+  grid-column: 1 / -1 !important;
+  display: block !important;
+}
+.ipm-summary {
+  min-height: 32px !important;
+  padding: 5px 7px !important;
+  margin-bottom: 0 !important;
+  border-radius: 8px !important;
+}
+.ipm-summary-title {
+  font-size: 12px !important;
+  line-height: 1.05 !important;
+}
+.ipm-summary-sub {
+  font-size: 9.5px !important;
+  line-height: 1.05 !important;
+}
+.ipm-summary-actions .btn,
+.remove-ipm {
+  min-height: 28px !important;
+  height: 28px !important;
+  padding: 3px 9px !important;
+  font-size: 11px !important;
+  border-radius: 7px !important;
+}
+.ipm-row.collapsed {
+  display: block !important;
+  padding: 5px !important;
+}
+.ipm-row.collapsed .ipm-summary-cell {
+  display: block !important;
+}
+.ipm-row.collapsed td:not(.ipm-summary-cell) {
+  display: none !important;
+}
+/* Hide calculated AI fields in the entry view; they still calculate for CSV/export. */
+.ipm-row td:nth-child(8),
+.ipm-row td:nth-child(9) {
+  display: none !important;
+}
+
+@media (max-width: 980px) {
+  .crop-head {
+    grid-template-columns: minmax(0, 1fr) 110px auto !important;
+  }
+  .ipm-row {
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  }
+  .ipm-summary-cell,
+  .ipm-row td[data-label="Notes"] {
+    grid-column: 1 / -1 !important;
+  }
+  .ipm-row td[data-label="Remove"] {
+    grid-column: 1 / -1 !important;
+  }
+  .remove-ipm {
+    width: 100% !important;
+  }
+}
+@media (max-width: 620px) {
+  .app-bar {
+    min-height: 36px !important;
+    padding: 5px 7px !important;
+  }
+  .step-bar {
+    height: 24px !important;
+  }
+  .crop-page-shell {
+    padding: 5px !important;
+  }
+  .crop-head {
+    grid-template-columns: minmax(0, 1fr) 86px !important;
+    margin: -5px -5px 5px !important;
+    padding: 5px !important;
+  }
+  .crop-head .remove-crop {
+    grid-column: 1 / -1 !important;
+    width: 100% !important;
+  }
+  .optional-bar {
+    grid-template-columns: minmax(0, 1fr) auto !important;
+    padding: 5px !important;
+  }
+  .optional-bar .help {
+    font-size: 9.5px !important;
+  }
+  .optional-bar .btn {
+    width: auto !important;
+  }
+  .optional-panel-head {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) auto !important;
+    gap: 6px !important;
+  }
+  .optional-panel-head .btn {
+    width: auto !important;
+  }
+  .ipm-row {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 4px !important;
+    padding: 5px !important;
+  }
+  .ipm-summary,
+  .ipm-summary-actions .btn,
+  .remove-ipm,
+  .ipm-row td input,
+  .ipm-row td select,
+  input, select, textarea {
+    min-height: 26px !important;
+    height: 26px !important;
+  }
+  .ipm-row td[data-label="Product Name"],
+  .ipm-row td[data-label="Notes"],
+  .ipm-row td[data-label="Remove"],
+  .ipm-summary-cell {
+    grid-column: 1 / -1 !important;
+  }
+}
+
+
+/* Summary report view modeled after the tillage summary */
+.summary-report-wrap { width: 100%; }
+.summary-hero {
+  background: linear-gradient(135deg, var(--sci-leaf-deep) 0%, var(--sci-earth) 68%, #66825f 100%);
+  border-radius: 10px;
+  padding: 28px 20px;
+  color: #fff;
+  margin: 8px 0 18px;
+  text-align: center;
+}
+.summary-hero .hero-lbl {
+  font-size: 11px;
+  font-weight: 850;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  opacity: .68;
+  margin-bottom: 8px;
+}
+.summary-hero .hero-val {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: clamp(38px, 8vw, 58px);
+  line-height: .95;
+  color: #E2B85F;
+  font-weight: 800;
+  margin-bottom: 7px;
+}
+.summary-hero .hero-sub { font-size: 13px; opacity: .76; font-weight: 700; }
+.summary-metrics {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+  margin-bottom: 18px;
+}
+.summary-metric {
+  background: #FDFBF7;
+  border: 1px solid var(--sci-line);
+  border-radius: 9px;
+  padding: 10px;
+}
+.summary-metric .m-val { font-size: 18px; font-weight: 900; color: var(--sci-leaf-deep); line-height: 1; }
+.summary-metric .m-lbl { margin-top: 5px; color: var(--sci-muted); font-size: 9px; font-weight: 850; text-transform: uppercase; letter-spacing: .08em; }
+.summary-section-title {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 22px;
+  color: var(--sci-earth);
+  margin: 0 0 12px;
+}
+.crop-summary-card {
+  background: #fff;
+  border: 1px solid var(--sci-line);
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 10px;
+}
+.crop-summary-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  align-items: center;
+  background: #F4EBD9;
+  border-bottom: 1px solid var(--sci-line);
+  padding: 11px 14px;
+}
+.crop-summary-head .csn { color: var(--sci-earth); font-size: 15px; font-weight: 900; }
+.crop-summary-head .csa { color: var(--sci-muted); font-size: 13px; font-weight: 750; }
+.crop-summary-body {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  padding: 12px 14px;
+}
+.cs-stat .csv { color: var(--sci-leaf-deep); font-size: 18px; font-weight: 900; line-height: 1; }
+.cs-stat .csl { color: var(--sci-muted); margin-top: 5px; font-size: 10px; font-weight: 850; text-transform: uppercase; letter-spacing: .07em; }
+.summary-table-wrap { overflow-x: auto; border-top: 1px solid var(--sci-line); }
+.summary-table {
+  width: 100%;
+  min-width: 860px;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+.summary-table th {
+  text-align: left;
+  color: var(--sci-muted);
+  background: #fff;
+  border-bottom: 1px solid var(--sci-line);
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+  padding: 8px 10px;
+  white-space: nowrap;
+}
+.summary-table td {
+  border-bottom: 1px solid #EFE7D7;
+  padding: 8px 10px;
+  vertical-align: middle;
+}
+.summary-table tr:last-child td { border-bottom: 0; }
+.summary-table .ai-val { color: var(--sci-earth); font-weight: 900; }
+.summary-empty { padding: 12px 14px; color: var(--sci-muted); font-size: 13px; }
+.summary-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 14px; }
+@media (max-width: 700px) {
+  .summary-hero { padding: 22px 14px; margin-top: 4px; }
+  .summary-metrics, .crop-summary-body { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .summary-actions { grid-template-columns: 1fr; }
+  .summary-section-title { font-size: 19px; }
+}
+@media (max-width: 420px) {
+  .summary-metrics, .crop-summary-body { grid-template-columns: 1fr; }
+}
+
+
+/* QA/QC cleanup */
+.qa-box:not(.hidden) {
+  display: block !important;
+  margin: 6px 0 8px !important;
+}
+.ipm-row.needs-attention {
+  border-color: #B95B42 !important;
+  box-shadow: 0 0 0 3px rgba(185,91,66,.12) !important;
+}
+
+.th-note {
+  display: block;
+  font-size: 8px;
+  line-height: 1.05;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--sci-muted);
+  font-weight: 700;
+  margin-top: 2px;
+}
+
+
+
+/* FIX: keep % Active Ingredient visible in the IPM entry card.
+   Earlier compact-entry CSS hid nth-child(7), but because each row has a summary cell,
+   nth-child(7) is the % Active Ingredient input. Only calculated fields should be hidden. */
+.ipm-row td[data-label="% Active Ingredient"] {
+  display: flex !important;
+}
+.ipm-row td[data-label="Active Ingredient / Acre"],
+.ipm-row td[data-label="Total Active Ingredient"] {
+  display: none !important;
+}
+
 </style>
 </head>
 <body>
@@ -593,7 +1012,7 @@ table td:nth-child(7), table td:nth-child(8) { display: none !important; }
   <div class="step-bar">
     <div class="step-item active"><div class="step-dot"></div><span>Setup</span></div>
     <div class="step-item"><div class="step-dot"></div><span>Crops</span></div>
-    <div class="step-item"><div class="step-dot"></div><span>Export</span></div>
+    <div class="step-item"><div class="step-dot"></div><span>Summary</span></div>
   </div>
   <div class="content">
     <div class="section-head">
@@ -618,12 +1037,12 @@ table td:nth-child(7), table td:nth-child(8) { display: none !important; }
   <div class="app-bar">
     <button class="back-btn" type="button" onclick="goTo('setup')">←</button>
     <span class="app-bar-title" id="cropsBarTitle">Crops</span>
-    <button class="app-bar-action" type="button" onclick="goToSummary()">Export →</button>
+    <button class="app-bar-action" type="button" onclick="goToSummary()">Summary →</button>
   </div>
   <div class="step-bar">
     <div class="step-item done"><div class="step-dot"></div><span>Setup</span></div>
     <div class="step-item active"><div class="step-dot"></div><span>Crops</span></div>
-    <div class="step-item"><div class="step-dot"></div><span>Export</span></div>
+    <div class="step-item"><div class="step-dot"></div><span>Summary</span></div>
   </div>
   <div class="content-wide">
     <div id="acreWarning" class="qa-box hidden"></div>
@@ -645,32 +1064,26 @@ table td:nth-child(7), table td:nth-child(8) { display: none !important; }
 <div class="screen" id="screen-summary">
   <div class="app-bar">
     <button class="back-btn" type="button" onclick="goTo('crops')">←</button>
-    <span class="app-bar-title">Export CSV</span>
+    <span class="app-bar-title">Summary Report</span>
+    <button class="app-bar-action" id="exportCsvTopBtn" type="button">Export CSV</button>
   </div>
   <div class="step-bar">
     <div class="step-item done"><div class="step-dot"></div><span>Setup</span></div>
     <div class="step-item done"><div class="step-dot"></div><span>Crops</span></div>
-    <div class="step-item active"><div class="step-dot"></div><span>Export</span></div>
+    <div class="step-item active"><div class="step-dot"></div><span>Summary</span></div>
   </div>
   <div class="content">
-    <div class="section-head">
-      <h2>Review and export</h2>
-      <div class="sub">Download the completed CSV when entries are ready.</div>
-    </div>
     <div id="summaryQa" class="qa-box hidden"></div>
-    <section class="card">
-      <div class="summary-simple">
-        <div class="metric"><div class="label">Crop Acres</div><div class="value" id="sumCropAcres">0.00</div></div>
-        <div class="metric"><div class="label">Remaining</div><div class="value" id="remainingAcres">0.00</div></div>
-        <div class="metric"><div class="label">IPM Entries</div><div class="value" id="farmEntries">0</div></div>
-      </div>
-      <div class="summary-actions">
-        <button class="btn secondary" id="exportCsvBtn" type="button">Export CSV</button>
-        <button class="btn ghost" type="button" onclick="goTo('crops')">Back to Entries</button>
-      </div>
-      <div class="hidden" id="farmTotalAI">0.00</div>
-      <div class="hidden" id="cropAITiles"></div>
-    </section>
+    <div id="summaryContent" class="summary-report-wrap"></div>
+    <div class="summary-actions">
+      <button class="btn ghost" type="button" onclick="goTo('crops')">← Edit Crops</button>
+      <button class="btn secondary" id="exportCsvBtn" type="button">Export CSV</button>
+    </div>
+    <div class="hidden" id="sumCropAcres">0.00</div>
+    <div class="hidden" id="remainingAcres">0.00</div>
+    <div class="hidden" id="farmEntries">0</div>
+    <div class="hidden" id="farmTotalAI">0.00</div>
+    <div class="hidden" id="cropAITiles"></div>
   </div>
 </div>
 
@@ -695,14 +1108,14 @@ table td:nth-child(7), table td:nth-child(8) { display: none !important; }
 
     <section class="optional-panel ipm-panel hidden">
       <div class="optional-panel-head">
-        <div><h3>IPM Applications</h3><div class="help">Use the product label rate as Amount / Acre and active ingredient as a percentage.</div></div>
+        <div><h3>IPM Applications</h3><div class="help">Use the product label rate as Amount / Acre. Enter active ingredient as a percentage number. Example: type 41 for 41%. The tool converts it to 0.41 for the spreadsheet formula.</div></div>
         <button class="btn ghost add-ipm-panel" type="button">Add Another Entry</button>
       </div>
       <div class="table-wrap">
         <table>
           <thead>
             <tr>
-              <th>Application Date</th><th style="width:170px">Weed or Pest</th><th style="width:170px">Product Name</th><th>Unit</th><th>Amount / Acre</th><th>% Active Ingredient</th><th>AI / Acre</th><th>Total AI</th><th>Notes</th><th></th>
+              <th>Application Date</th><th style="width:170px">Weed or Pest</th><th style="width:170px">Product Name</th><th>Unit</th><th>Amount / Acre</th><th>% Active Ingredient<br><span class="th-note">type 41 for 41%</span></th><th>AI / Acre</th><th>Total AI</th><th>Notes</th><th></th>
             </tr>
           </thead>
           <tbody class="ipm-body"></tbody>
@@ -720,7 +1133,7 @@ table td:nth-child(7), table td:nth-child(8) { display: none !important; }
     <td data-label="Product Name"><input class="product-name" placeholder="Product name" /></td>
     <td data-label="Unit"><select class="product-unit"><option>Fluid oz</option><option>Pints</option><option>Quarts</option><option>Gallons</option><option>oz</option><option>lbs</option><option>Tons</option></select></td>
     <td data-label="Amount / Acre"><input class="amount-acre" type="number" min="0" step="0.001" placeholder="0" /></td>
-    <td data-label="% Active Ingredient"><input class="active-pct" type="number" min="0" max="100" step="0.01" placeholder="0" /></td>
+    <td data-label="% Active Ingredient"><input class="active-pct" type="number" min="0" max="100" step="0.01" placeholder="41" inputmode="decimal" /></td>
     <td data-label="Active Ingredient / Acre" class="readonly ai-acre">0.00</td>
     <td data-label="Total Active Ingredient" class="readonly ai-total">0.00</td>
     <td data-label="Notes"><input class="notes" placeholder="Optional" /></td>
@@ -765,8 +1178,23 @@ function ipmStarted(row) {
   if (!row) return false;
   return !!($('.application-date', row).value || $('.pest', row).value.trim() || $('.product-name', row).value.trim() || num($('.amount-acre', row).value) > 0 || num($('.active-pct', row).value) > 0 || $('.notes', row).value.trim());
 }
+function validActivePct(row) {
+  const v = num($('.active-pct', row).value);
+  return v > 0 && v <= 100;
+}
 function ipmComplete(row) {
-  return !!($('.application-date', row).value && $('.pest', row).value.trim() && $('.product-name', row).value.trim() && num($('.amount-acre', row).value) > 0 && num($('.active-pct', row).value) > 0);
+  return !!($('.application-date', row).value && $('.pest', row).value.trim() && $('.product-name', row).value.trim() && num($('.amount-acre', row).value) > 0 && validActivePct(row));
+}
+function ipmMissingMessage(row) {
+  const missing = [];
+  if (!$('.application-date', row).value) missing.push('application date');
+  if (!$('.pest', row).value.trim()) missing.push('weed or pest');
+  if (!$('.product-name', row).value.trim()) missing.push('product name');
+  if (num($('.amount-acre', row).value) <= 0) missing.push('amount/acre');
+  const ai = num($('.active-pct', row).value);
+  if (ai <= 0) missing.push('% active ingredient');
+  if (ai > 100) missing.push('% active ingredient must be 100 or less');
+  return missing.join(', ');
 }
 function refreshIpmTitles(crop) {
   $$('.ipm-row', crop).forEach((row, i) => {
@@ -788,7 +1216,15 @@ function collapseCompletedApplications(crop) {
 }
 function openApplication(row) {
   row.classList.remove('collapsed');
-  setTimeout(() => $('.application-date', row)?.focus(), 20);
+  setTimeout(() => {
+    const focusTarget = !$('.application-date', row).value ? $('.application-date', row)
+      : !$('.pest', row).value.trim() ? $('.pest', row)
+      : !$('.product-name', row).value.trim() ? $('.product-name', row)
+      : num($('.amount-acre', row).value) <= 0 ? $('.amount-acre', row)
+      : !validActivePct(row) ? $('.active-pct', row)
+      : $('.application-date', row);
+    focusTarget?.focus();
+  }, 20);
 }
 function validateSetup() {
   if (!$('#farmName').value.trim()) return { ok:false, message:'Add the farm name before continuing.', el:$('#farmName') };
@@ -802,25 +1238,59 @@ function validateJourney() {
   if (!setup.ok) return setup;
   const crops = getCropCards();
   if (!crops.length) return { ok:false, message:'Add at least one crop before exporting.', el:$('#crops') };
+
+  const totalFarmAcres = num($('#totalAcres').value);
+  let cropAcresTotal = 0;
   let entries = 0;
+
   for (const [ci, crop] of crops.entries()) {
-    const name = $('.crop-name', crop).value.trim();
-    const acres = num($('.crop-acres', crop).value);
-    if (!name) { setActiveCrop(ci); return { ok:false, message:'Add a crop name before exporting.', el:$('.crop-name', crop) }; }
-    if (acres <= 0) { setActiveCrop(ci); return { ok:false, message:`Add acres for ${name}.`, el:$('.crop-acres', crop) }; }
+    const nameInput = $('.crop-name', crop);
+    const acresInput = $('.crop-acres', crop);
+    const name = nameInput.value.trim();
+    const acres = num(acresInput.value);
+
+    if (!name) {
+      setActiveCrop(ci);
+      return { ok:false, message:`Add a crop name for Crop ${ci + 1}.`, el:nameInput };
+    }
+    if (acres <= 0) {
+      setActiveCrop(ci);
+      return { ok:false, message:`Add crop acres for ${name}.`, el:acresInput };
+    }
+    cropAcresTotal += acres;
+  }
+
+  const acreDifference = totalFarmAcres - cropAcresTotal;
+  if (totalFarmAcres > 0 && Math.abs(acreDifference) > 0.01) {
+    const message = acreDifference > 0
+      ? `${fmt(acreDifference, 2)} acres are still unassigned. Crop acres must equal total farm acres before export.`
+      : `Crop acres exceed total farm acres by ${fmt(Math.abs(acreDifference), 2)} acres. Fix acres before export.`;
+    return { ok:false, message, el:$('#acreWarning') || $('#crops') };
+  }
+
+  for (const [ci, crop] of crops.entries()) {
+    const name = $('.crop-name', crop).value.trim() || `Crop ${ci + 1}`;
     for (const row of $$('.ipm-row', crop)) {
       row.classList.remove('needs-attention');
-      if (ipmComplete(row)) entries++;
-      else if (ipmStarted(row)) {
+      if (ipmComplete(row)) {
+        entries++;
+      } else if (ipmStarted(row)) {
         setActiveCrop(ci);
         row.classList.add('needs-attention');
         openApplication(row);
-        return { ok:false, message:`Finish the incomplete IPM application for ${name}: date, pest, product, amount/acre, and % active ingredient are required.`, el:row };
+        const missing = ipmMissingMessage(row);
+        return { ok:false, message:`Finish or remove the incomplete IPM application for ${name}. Missing: ${missing}.`, el:row };
       }
     }
   }
+
   if (!entries) return { ok:false, message:'Add at least one complete IPM application before exporting.', el:$('#crops') };
   return { ok:true, message:'' };
+}
+
+function clearCropQualityMessages() {
+  showCropQA('');
+  $$('.ipm-row.needs-attention').forEach(row => row.classList.remove('needs-attention'));
 }
 function goToCrops() {
   const check = validateSetup();
@@ -829,18 +1299,19 @@ function goToCrops() {
   syncCropCardsToCount();
   $('#cropsBarTitle').textContent = ($('#farmName').value.trim() || 'Farm') + ' — Crops';
   goTo('crops');
-  showCropQA('Add crop name and acres, then add IPM applications only when needed. Completed applications close automatically when you add another.');
+  showCropQA('');
 }
 function goToSummary() {
   calculateAll();
   const check = validateJourney();
   if (!check.ok) {
     showCropQA(check.message);
-    if (check.el) check.el.scrollIntoView({ behavior:'smooth', block:'center' });
+    if (check.el) setTimeout(() => check.el.scrollIntoView({ behavior:'smooth', block:'center' }), 40);
     return;
   }
   showCropQA('');
-  showSummaryQA('Ready. Export the CSV and save or send it as needed.');
+  showSummaryQA('');
+  renderSummary();
   goTo('summary');
 }
 
@@ -853,6 +1324,8 @@ function createIpmRow() {
     calculateAll();
   });
   row.addEventListener('change', () => {
+    const aiInput = $('.active-pct', row);
+    if (aiInput && num(aiInput.value) > 100) aiInput.value = '100';
     row.classList.remove('needs-attention');
     showCropQA('');
     refreshIpmTitles(row.closest('.crop-card'));
@@ -956,8 +1429,8 @@ function addCrop(name = '', acres = '') {
     setActiveCrop(activeCropIndex);
     calculateAll();
   });
-  crop.addEventListener('input', () => { refreshIpmTitles(crop); calculateAll(); });
-  crop.addEventListener('change', () => { refreshIpmTitles(crop); calculateAll(); });
+  crop.addEventListener('input', () => { clearCropQualityMessages(); refreshIpmTitles(crop); calculateAll(); });
+  crop.addEventListener('change', () => { clearCropQualityMessages(); refreshIpmTitles(crop); calculateAll(); });
   $('#crops').appendChild(crop);
   updateOptionalPanels(crop);
   setActiveCrop($$('.crop-card').length - 1);
@@ -973,11 +1446,12 @@ function getIpmData(crop, row) {
   const productUnit = $('.product-unit', row).value;
   const amountPerAcre = num($('.amount-acre', row).value);
   const activePct = clampPct($('.active-pct', row).value);
-  const activeIngredientPerAcre = amountPerAcre * (activePct / 100);
+  const activePctDecimal = activePct / 100;
+  const activeIngredientPerAcre = amountPerAcre * activePctDecimal;
   const totalActiveIngredient = activeIngredientPerAcre * cropAcres;
   const notes = $('.notes', row).value.trim();
   const hasEntry = applicationDate || pest || productName || amountPerAcre > 0 || activePct > 0 || notes;
-  return { cropName, cropAcres, applicationDate, pest, productName, productUnit, amountPerAcre, activePct, activeIngredientPerAcre, totalActiveIngredient, notes, hasEntry };
+  return { cropName, cropAcres, applicationDate, pest, productName, productUnit, amountPerAcre, activePct, activePctDecimal, activeIngredientPerAcre, totalActiveIngredient, notes, hasEntry };
 }
 
 function calculateAll() {
@@ -1022,7 +1496,9 @@ function calculateAll() {
   $('#farmTotalAI').textContent = fmt(farmTotalAI, 4);
   const warning = $('#acreWarning');
   if (totalAcres > 0 && Math.abs(remaining) > 0.01) {
-    warning.textContent = remaining < 0 ? `Crop acres exceed total acres by ${fmt(Math.abs(remaining), 2)} acres.` : `${fmt(remaining, 2)} acres remain unassigned to crops.`;
+    warning.textContent = remaining < 0
+      ? `QA/QC: Crop acres exceed total farm acres by ${fmt(Math.abs(remaining), 2)} acres. Adjust crop acres before export.`
+      : `QA/QC: ${fmt(remaining, 2)} acres remain unassigned. Crop acres must equal total farm acres before export.`;
     warning.classList.remove('hidden');
   } else warning.classList.add('hidden');
   const tileWrap = $('#cropAITiles');
@@ -1034,6 +1510,86 @@ function calculateAll() {
     tileWrap.appendChild(el);
   });
   renderCropNavigation();
+}
+
+
+function htmlEscape(value) {
+  return String(value ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+}
+
+function renderSummary() {
+  calculateAll();
+  const farmName = $('#farmName').value.trim() || 'Untitled Farm';
+  const state = $('#state').value;
+  const preparedBy = $('#preparedBy').value.trim();
+  const totalAcres = num($('#totalAcres').value);
+  const cropAcres = $('#sumCropAcres').textContent;
+  const remaining = $('#remainingAcres').textContent;
+  const entries = $('#farmEntries').textContent;
+  const farmTotalAI = $('#farmTotalAI').textContent;
+
+  let html = `
+    <div class="summary-hero">
+      <div class="hero-lbl">Farm Total Active Ingredient</div>
+      <div class="hero-val">${htmlEscape(farmTotalAI)}</div>
+      <div class="hero-sub">${htmlEscape(farmName)}${state ? ' · ' + htmlEscape(state) : ''}${preparedBy ? ' · ' + htmlEscape(preparedBy) : ''}</div>
+    </div>
+    <div class="summary-metrics">
+      <div class="summary-metric"><div class="m-val">${totalAcres > 0 ? fmt(totalAcres, 2) : '—'}</div><div class="m-lbl">Total Acres</div></div>
+      <div class="summary-metric"><div class="m-val">${htmlEscape(cropAcres)}</div><div class="m-lbl">Crop Acres</div></div>
+      <div class="summary-metric"><div class="m-val">${htmlEscape(remaining)}</div><div class="m-lbl">Remaining</div></div>
+      <div class="summary-metric"><div class="m-val">${htmlEscape(entries)}</div><div class="m-lbl">IPM Entries</div></div>
+    </div>
+    <h3 class="summary-section-title">Crop Breakdown</h3>
+  `;
+
+  $$('.crop-card').forEach((crop, ci) => {
+    const cropName = $('.crop-name', crop).value.trim() || `Crop ${ci + 1}`;
+    const acres = num($('.crop-acres', crop).value);
+    const aiAcre = $('.crop-ai-acre', crop).textContent;
+    const totalAI = $('.crop-ai-total', crop).textContent;
+    const cropEntries = $('.crop-products', crop).textContent;
+    let rows = '';
+
+    $$('.ipm-row', crop).forEach(row => {
+      const data = getIpmData(crop, row);
+      if (!data.hasEntry) return;
+      rows += `
+        <tr>
+          <td>${htmlEscape(data.applicationDate || '—')}</td>
+          <td>${htmlEscape(data.pest || '—')}</td>
+          <td>${htmlEscape(data.productName || '—')}</td>
+          <td>${htmlEscape(data.productUnit || '—')}</td>
+          <td>${fmt(data.amountPerAcre, 3)}</td>
+          <td>${fmt(data.activePct, 2)}%</td>
+          <td class="ai-val">${fmt(data.activeIngredientPerAcre, 4)}</td>
+          <td class="ai-val">${fmt(data.totalActiveIngredient, 4)}</td>
+        </tr>`;
+    });
+
+    html += `
+      <div class="crop-summary-card">
+        <div class="crop-summary-head">
+          <span class="csn">${htmlEscape(cropName)}</span>
+          <span class="csa">${acres ? fmt(acres, 2) + ' ac' : ''}</span>
+        </div>
+        <div class="crop-summary-body">
+          <div class="cs-stat"><div class="csv">${htmlEscape(aiAcre)}</div><div class="csl">AI / Acre</div></div>
+          <div class="cs-stat"><div class="csv">${htmlEscape(totalAI)}</div><div class="csl">Total AI</div></div>
+          <div class="cs-stat"><div class="csv">${htmlEscape(cropEntries)}</div><div class="csl">IPM Entries</div></div>
+        </div>
+        ${rows ? `
+        <div class="summary-table-wrap">
+          <table class="summary-table">
+            <thead><tr><th>Date</th><th>Weed or Pest</th><th>Product</th><th>Unit</th><th>Amount / Acre</th><th>% AI</th><th>AI / Acre</th><th>Total AI</th></tr></thead>
+            <tbody>${rows}</tbody>
+          </table>
+        </div>` : '<div class="summary-empty">No IPM applications entered for this crop.</div>'}
+      </div>`;
+  });
+
+  const target = $('#summaryContent');
+  if (target) target.innerHTML = html;
 }
 
 function csvEscape(value) {
@@ -1050,7 +1606,7 @@ function exportCsv() {
   const state = $('#state').value;
   const totalAcres = $('#totalAcres').value;
   const preparedBy = $('#preparedBy').value.trim();
-  const rows = [['Farm Name','State','Total Farm Acres','Prepared By','Crop','Crop Acres','Application Date','Weed or Pest','Product Name','Unit','Amount per Acre','Percent Active Ingredient','Active Ingredient per Acre','Total Active Ingredient over Crop Acres','Notes']];
+  const rows = [['Farm Name','State','Total Farm Acres','Prepared By','Crop','Crop Acres','Application Date','Weed or Pest','Product Name','Unit','Amount per Acre','Percent Active Ingredient (%)','Active Ingredient per Acre','Total Active Ingredient over Crop Acres','Notes']];
   $$('.crop-card').forEach((crop, idx) => {
     const cropName = $('.crop-name', crop).value.trim() || `Crop ${idx + 1}`;
     const cropAcres = num($('.crop-acres', crop).value);
@@ -1078,15 +1634,20 @@ function exportCsv() {
 
 $('#cropCount').addEventListener('change', syncCropCardsToCount);
 $('#cropCount').addEventListener('input', () => { if ($('#cropCount').value.trim()) syncCropCardsToCount(); });
-$('#addCropBtn').addEventListener('click', () => {
-  if ($$('.crop-card').length >= MAX_CROPS) return;
-  const next = $$('.crop-card').length + 1;
-  $('#cropCount').value = String(next);
-  addCrop(`Crop ${next}`, '');
-});
+const addCropBtn = $('#addCropBtn');
+if (addCropBtn) {
+  addCropBtn.addEventListener('click', () => {
+    if ($$('.crop-card').length >= MAX_CROPS) return;
+    const next = $$('.crop-card').length + 1;
+    $('#cropCount').value = String(next);
+    addCrop(`Crop ${next}`, '');
+  });
+}
 $('#prevCropBtn').addEventListener('click', () => setActiveCrop(activeCropIndex - 1));
 $('#nextCropBtn').addEventListener('click', () => setActiveCrop(activeCropIndex + 1));
 $('#exportCsvBtn').addEventListener('click', exportCsv);
+const exportCsvTopBtn = $('#exportCsvTopBtn');
+if (exportCsvTopBtn) exportCsvTopBtn.addEventListener('click', exportCsv);
 ['farmName', 'state', 'totalAcres', 'preparedBy'].forEach(id => {
   $(`#${id}`).addEventListener('input', calculateAll);
   $(`#${id}`).addEventListener('change', calculateAll);
