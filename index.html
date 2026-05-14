@@ -445,6 +445,131 @@ table td:nth-child(7), table td:nth-child(8) { display: none !important; }
   .optional-bar .btn { width: 100% !important; }
 }
 
+/* CSV-only, phone-first cleanup */
+.export-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+}
+.send-note {
+  font-size: 12px;
+  line-height: 1.25;
+  color: var(--muted);
+  text-align: right;
+}
+.send-note strong { color: var(--green-dark); font-weight: 800; }
+.compact-summary .summary-grid,
+.crop-stats,
+.crop-mini-summary {
+  display: none !important;
+}
+.compact-summary {
+  padding: 6px 10px !important;
+  margin-bottom: 8px !important;
+}
+.compact-summary .card-title {
+  display: flex !important;
+  margin-bottom: 0 !important;
+}
+.compact-summary h2 { font-size: 14px !important; }
+.crop-card { padding-top: 10px !important; }
+.crop-header { margin-bottom: 8px !important; }
+@media (max-width: 760px) {
+  .export-actions { align-items: stretch; width: 100%; }
+  .send-note { text-align: center; font-size: 11px; }
+  .card-title { gap: 8px !important; }
+  .input-grid { gap: 8px !important; }
+}
+
+
+/* Step-based phone UX */
+.app-bar {
+  background: var(--sci-leaf-deep);
+  color: #fff;
+  min-height: 42px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 10px;
+  position: sticky;
+  top: 0;
+  z-index: 20;
+}
+.back-btn, .app-bar-action {
+  background: rgba(255,255,255,.08);
+  color: #fff;
+  border: 1px solid rgba(255,255,255,.22);
+  border-radius: 8px;
+  padding: 5px 10px;
+  font-weight: 800;
+  cursor: pointer;
+}
+.back-btn { width: 34px; padding: 5px 0; }
+.app-bar-title { flex: 1; font-weight: 850; letter-spacing: -.01em; }
+.step-bar {
+  height: 34px;
+  background: var(--sci-soft);
+  border-bottom: 1px solid var(--sci-line);
+  display: flex;
+  align-items: center;
+  padding: 0 10px;
+}
+.step-item {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  color: rgba(63,92,58,.42);
+  font-size: 10px;
+  font-weight: 850;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  position: relative;
+}
+.step-item.done, .step-item.active { color: var(--sci-leaf-deep); }
+.step-dot { width: 7px; height: 7px; border-radius: 999px; background: currentColor; flex: 0 0 7px; }
+.content, .content-wide { width: 100%; max-width: 760px; margin: 0 auto; padding: 10px 8px 18px; }
+.content-wide { max-width: 980px; }
+.section-head { margin-bottom: 8px; }
+.section-head h2 { font-size: 18px; color: var(--sci-earth); margin: 0; }
+.section-head .sub { color: var(--sci-muted); font-size: 12px; margin-top: 2px; }
+.qa-box, .warning-box {
+  border: 1px solid var(--sci-line);
+  border-left: 4px solid var(--sci-clay);
+  background: #FFF8EA;
+  border-radius: 10px;
+  padding: 8px 10px;
+  margin: 8px 0;
+  color: var(--sci-earth);
+  font-size: 12px;
+  font-weight: 650;
+}
+.summary-simple { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 8px; margin: 8px 0 12px; }
+.summary-simple .metric { padding: 10px; border-radius: 10px; }
+.summary-simple .value { font-size: 18px; }
+.summary-actions { display: grid; gap: 8px; }
+#screen-setup .input-grid { grid-template-columns: repeat(2, minmax(0,1fr)); }
+#screen-setup .field.full { grid-column: 1 / -1; }
+.ipm-summary-cell { padding: 0 !important; background: transparent !important; border: 0 !important; }
+.ipm-summary { display: flex; align-items: center; justify-content: space-between; gap: 8px; border: 1px solid var(--sci-line); background: #FDFBF7; border-radius: 10px; padding: 7px 8px; margin-bottom: 6px; }
+.ipm-summary-title { font-weight: 850; color: var(--sci-earth); font-size: 12px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ipm-summary-sub { color: var(--sci-muted); font-size: 10px; margin-top: 1px; }
+.ipm-summary-actions { display: flex; gap: 5px; flex: 0 0 auto; }
+.ipm-summary-actions .btn { min-height: 28px; height: 28px; padding: 3px 8px; font-size: 11px; }
+.ipm-row.collapsed td:not(.ipm-summary-cell) { display: none !important; }
+.ipm-row.needs-attention .ipm-summary { border-color: #B95B42; box-shadow: 0 0 0 3px rgba(185,91,66,.12); }
+@media (max-width: 760px) {
+  .step-item span { display: none; }
+  .content, .content-wide { padding: 8px 6px 14px; }
+  #screen-setup .input-grid { grid-template-columns: 1fr; }
+  .summary-simple { grid-template-columns: 1fr; }
+  .section-head h2 { font-size: 16px; }
+  .app-bar-action { padding: 5px 8px; font-size: 12px; }
+  .ipm-summary { align-items: flex-start; }
+}
+
 </style>
 </head>
 <body>
@@ -454,54 +579,99 @@ table td:nth-child(7), table td:nth-child(8) { display: none !important; }
       <div class="feature-item"><div class="fi-icon">🏡</div><div class="fi-text"><div class="fi-head">Farm Setup</div><div class="fi-sub">Name, state, total acres, and crop count</div></div></div>
       <div class="feature-item"><div class="fi-icon">🌱</div><div class="fi-text"><div class="fi-head">Crop-by-Crop Entry</div><div class="fi-sub">Add IPM inputs only for crops that need them</div></div></div>
       <div class="feature-item"><div class="fi-icon">🧪</div><div class="fi-text"><div class="fi-head">Active Ingredient Tracking</div><div class="fi-sub">Calculate AI per acre and totals in the background</div></div></div>
-      <div class="feature-item"><div class="fi-icon">📥</div><div class="fi-text"><div class="fi-head">Export to CSV</div><div class="fi-sub">Download a clean spreadsheet for records</div></div></div>
+      <div class="feature-item"><div class="fi-icon">📥</div><div class="fi-text"><div class="fi-head">Export CSV</div><div class="fi-sub">Download a clean CSV record</div></div></div>
     </div>
     <button class="btn-primary" onclick="goTo('setup')">Get Started →</button>
   </div>
 </div>
 
 <div class="screen" id="screen-setup">
-<div class="page">
-  <section class="card">
-    <div class="card-title">
-      <div><h2>Farm Details</h2><div class="help">Enter farm acres, choose crops, then add IPM applications only when needed.</div></div>
-      <div class="actions"><button class="btn secondary" id="exportCsvBtn" type="button">Export CSV</button></div>
+  <div class="app-bar">
+    <button class="back-btn" type="button" onclick="goTo('home')">←</button>
+    <span class="app-bar-title">Farm Setup</span>
+  </div>
+  <div class="step-bar">
+    <div class="step-item active"><div class="step-dot"></div><span>Setup</span></div>
+    <div class="step-item"><div class="step-dot"></div><span>Crops</span></div>
+    <div class="step-item"><div class="step-dot"></div><span>Export</span></div>
+  </div>
+  <div class="content">
+    <div class="section-head">
+      <h2>Farm details</h2>
+      <div class="sub">Enter only the basics needed to start.</div>
     </div>
-    <div class="input-grid">
-      <div class="field"><label for="farmName">Farm Name</label><input id="farmName" placeholder="Example: ABC Farm" /></div>
-      <div class="field"><label for="state">State</label><select id="state"><option value="">Select state</option><option>Alabama</option><option>Alaska</option><option>Arizona</option><option>Arkansas</option><option>California</option><option>Colorado</option><option>Connecticut</option><option>Delaware</option><option>Florida</option><option>Georgia</option><option>Hawaii</option><option>Idaho</option><option>Illinois</option><option>Indiana</option><option>Iowa</option><option>Kansas</option><option>Kentucky</option><option>Louisiana</option><option>Maine</option><option>Maryland</option><option>Massachusetts</option><option>Michigan</option><option>Minnesota</option><option>Mississippi</option><option>Missouri</option><option>Montana</option><option>Nebraska</option><option>Nevada</option><option>New Hampshire</option><option>New Jersey</option><option>New Mexico</option><option>New York</option><option>North Carolina</option><option>North Dakota</option><option>Ohio</option><option>Oklahoma</option><option>Oregon</option><option>Pennsylvania</option><option>Rhode Island</option><option>South Carolina</option><option>South Dakota</option><option>Tennessee</option><option>Texas</option><option>Utah</option><option>Vermont</option><option>Virginia</option><option>Washington</option><option>West Virginia</option><option>Wisconsin</option><option>Wyoming</option></select></div>
-      <div class="field"><label for="totalAcres">Total Acres</label><input id="totalAcres" type="number" min="0" step="0.01" placeholder="0" /></div>
-      <div class="field"><label for="preparedBy">Prepared By</label><input id="preparedBy" placeholder="Optional" /></div>
-      <div class="field"><label for="cropCount">Number of Crops</label><input id="cropCount" type="number" min="1" max="10" step="1" value="1" /></div>
-    </div>
-  </section>
-
-  <section class="card compact-summary">
-    <div class="card-title">
-      <div><h2>Summary</h2><div class="help">Compact totals for iframe viewing.</div></div>
-      <div class="actions"><button class="btn ghost" id="addCropBtn" type="button">Add Crop</button></div>
-    </div>
-    <div id="acreWarning" class="note hidden"></div>
-    <div class="summary-grid">
-      <div class="metric"><div class="label">Crop Acres</div><div class="value" id="sumCropAcres">0.00</div><div class="small">Entered</div></div>
-      <div class="metric"><div class="label">Remaining</div><div class="value" id="remainingAcres">0.00</div><div class="small">Unassigned</div></div>
-      <div class="metric"><div class="label">IPM Entries</div><div class="value" id="farmEntries">0</div><div class="small">All crops</div></div>
-      <div class="metric"><div class="label">Total AI</div><div class="value" id="farmTotalAI">0.00</div><div class="small">Across acres</div></div>
-    </div>
-    <div class="crop-mini-summary" id="cropAITiles"></div>
-  </section>
-
-  <section class="crop-page-shell">
-    <div class="crop-page-top">
-      <div class="crop-tabs" id="cropTabs" aria-label="Crop pages"></div>
-      <div class="crop-page-controls">
-        <button class="btn ghost" id="prevCropBtn" type="button">Previous</button>
-        <span class="crop-page-count" id="cropPageCount">Crop 1 of 1</span>
-        <button class="btn ghost" id="nextCropBtn" type="button">Next</button>
+    <div id="setupQa" class="qa-box hidden"></div>
+    <section class="card">
+      <div class="input-grid">
+        <div class="field full"><label for="farmName">Farm Name</label><input id="farmName" placeholder="Example: ABC Farm" /></div>
+        <div class="field"><label for="state">State</label><select id="state"><option value="">Select state</option><option>Alabama</option><option>Alaska</option><option>Arizona</option><option>Arkansas</option><option>California</option><option>Colorado</option><option>Connecticut</option><option>Delaware</option><option>Florida</option><option>Georgia</option><option>Hawaii</option><option>Idaho</option><option>Illinois</option><option>Indiana</option><option>Iowa</option><option>Kansas</option><option>Kentucky</option><option>Louisiana</option><option>Maine</option><option>Maryland</option><option>Massachusetts</option><option>Michigan</option><option>Minnesota</option><option>Mississippi</option><option>Missouri</option><option>Montana</option><option>Nebraska</option><option>Nevada</option><option>New Hampshire</option><option>New Jersey</option><option>New Mexico</option><option>New York</option><option>North Carolina</option><option>North Dakota</option><option>Ohio</option><option>Oklahoma</option><option>Oregon</option><option>Pennsylvania</option><option>Rhode Island</option><option>South Carolina</option><option>South Dakota</option><option>Tennessee</option><option>Texas</option><option>Utah</option><option>Vermont</option><option>Virginia</option><option>Washington</option><option>West Virginia</option><option>Wisconsin</option><option>Wyoming</option></select></div>
+        <div class="field"><label for="totalAcres">Total Acres</label><input id="totalAcres" type="number" min="0" step="0.01" placeholder="0" inputmode="decimal" /></div>
+        <div class="field"><label for="cropCount">Number of Crops</label><input id="cropCount" type="number" min="1" max="10" step="1" value="1" inputmode="numeric" /></div>
+        <div class="field"><label for="preparedBy">Prepared By</label><input id="preparedBy" placeholder="Optional" /></div>
       </div>
+    </section>
+    <button class="btn-primary" type="button" onclick="goToCrops()">Continue to Crops →</button>
+  </div>
+</div>
+
+<div class="screen" id="screen-crops">
+  <div class="app-bar">
+    <button class="back-btn" type="button" onclick="goTo('setup')">←</button>
+    <span class="app-bar-title" id="cropsBarTitle">Crops</span>
+    <button class="app-bar-action" type="button" onclick="goToSummary()">Export →</button>
+  </div>
+  <div class="step-bar">
+    <div class="step-item done"><div class="step-dot"></div><span>Setup</span></div>
+    <div class="step-item active"><div class="step-dot"></div><span>Crops</span></div>
+    <div class="step-item"><div class="step-dot"></div><span>Export</span></div>
+  </div>
+  <div class="content-wide">
+    <div id="acreWarning" class="qa-box hidden"></div>
+    <div id="cropQa" class="qa-box hidden"></div>
+    <section class="crop-page-shell">
+      <div class="crop-page-top">
+        <div class="crop-tabs" id="cropTabs" aria-label="Crop pages"></div>
+        <div class="crop-page-controls">
+          <button class="btn ghost" id="prevCropBtn" type="button">Previous</button>
+          <span class="crop-page-count" id="cropPageCount">Crop 1 of 1</span>
+          <button class="btn ghost" id="nextCropBtn" type="button">Next</button>
+        </div>
+      </div>
+      <main id="crops"></main>
+    </section>
+  </div>
+</div>
+
+<div class="screen" id="screen-summary">
+  <div class="app-bar">
+    <button class="back-btn" type="button" onclick="goTo('crops')">←</button>
+    <span class="app-bar-title">Export CSV</span>
+  </div>
+  <div class="step-bar">
+    <div class="step-item done"><div class="step-dot"></div><span>Setup</span></div>
+    <div class="step-item done"><div class="step-dot"></div><span>Crops</span></div>
+    <div class="step-item active"><div class="step-dot"></div><span>Export</span></div>
+  </div>
+  <div class="content">
+    <div class="section-head">
+      <h2>Review and export</h2>
+      <div class="sub">Download the completed CSV when entries are ready.</div>
     </div>
-    <main id="crops"></main>
-  </section>
+    <div id="summaryQa" class="qa-box hidden"></div>
+    <section class="card">
+      <div class="summary-simple">
+        <div class="metric"><div class="label">Crop Acres</div><div class="value" id="sumCropAcres">0.00</div></div>
+        <div class="metric"><div class="label">Remaining</div><div class="value" id="remainingAcres">0.00</div></div>
+        <div class="metric"><div class="label">IPM Entries</div><div class="value" id="farmEntries">0</div></div>
+      </div>
+      <div class="summary-actions">
+        <button class="btn secondary" id="exportCsvBtn" type="button">Export CSV</button>
+        <button class="btn ghost" type="button" onclick="goTo('crops')">Back to Entries</button>
+      </div>
+      <div class="hidden" id="farmTotalAI">0.00</div>
+      <div class="hidden" id="cropAITiles"></div>
+    </section>
+  </div>
 </div>
 
 <template id="cropTemplate">
@@ -544,6 +714,7 @@ table td:nth-child(7), table td:nth-child(8) { display: none !important; }
 
 <template id="ipmTemplate">
   <tr class="ipm-row">
+    <td class="ipm-summary-cell" colspan="10"><div class="ipm-summary"><div><div class="ipm-summary-title">New IPM Application</div><div class="ipm-summary-sub">Tap edit to open details</div></div><div class="ipm-summary-actions"><button class="btn ghost edit-ipm" type="button">Edit</button></div></div></td>
     <td data-label="Application Date"><input class="application-date" type="date" /></td>
     <td data-label="Weed or Pest"><input class="pest" placeholder="Grass, broadleaf, insect..." /></td>
     <td data-label="Product Name"><input class="product-name" placeholder="Product name" /></td>
@@ -576,22 +747,145 @@ function updateOptionalPanels(crop) {
   $('.ipm-panel', crop).classList.toggle('hidden', !hasIpm);
 }
 
+
+function postHeight() {
+  try { window.parent.postMessage({ type: 'sci-calculator-height', height: document.documentElement.scrollHeight }, '*'); } catch(e) {}
+}
+function showBox(id, message) {
+  const box = $(id);
+  if (!box) return;
+  if (!message) { box.classList.add('hidden'); box.textContent = ''; return; }
+  box.textContent = message;
+  box.classList.remove('hidden');
+}
+function showCropQA(message) { showBox('#cropQa', message); }
+function showSetupQA(message) { showBox('#setupQa', message); }
+function showSummaryQA(message) { showBox('#summaryQa', message); }
+function ipmStarted(row) {
+  if (!row) return false;
+  return !!($('.application-date', row).value || $('.pest', row).value.trim() || $('.product-name', row).value.trim() || num($('.amount-acre', row).value) > 0 || num($('.active-pct', row).value) > 0 || $('.notes', row).value.trim());
+}
+function ipmComplete(row) {
+  return !!($('.application-date', row).value && $('.pest', row).value.trim() && $('.product-name', row).value.trim() && num($('.amount-acre', row).value) > 0 && num($('.active-pct', row).value) > 0);
+}
+function refreshIpmTitles(crop) {
+  $$('.ipm-row', crop).forEach((row, i) => {
+    const product = $('.product-name', row).value.trim();
+    const pest = $('.pest', row).value.trim();
+    const date = $('.application-date', row).value;
+    const title = product || pest || `IPM Application ${i + 1}`;
+    const bits = [];
+    if (date) bits.push(date);
+    if (pest && product) bits.push(pest);
+    $('.ipm-summary-title', row).textContent = title;
+    $('.ipm-summary-sub', row).textContent = bits.length ? bits.join(' · ') : 'Tap edit to open details';
+  });
+}
+function collapseCompletedApplications(crop) {
+  $$('.ipm-row', crop).forEach(row => {
+    if (ipmComplete(row)) row.classList.add('collapsed');
+  });
+}
+function openApplication(row) {
+  row.classList.remove('collapsed');
+  setTimeout(() => $('.application-date', row)?.focus(), 20);
+}
+function validateSetup() {
+  if (!$('#farmName').value.trim()) return { ok:false, message:'Add the farm name before continuing.', el:$('#farmName') };
+  if (!$('#state').value) return { ok:false, message:'Select the state before continuing.', el:$('#state') };
+  if (num($('#totalAcres').value) <= 0) return { ok:false, message:'Add total farm acres before continuing.', el:$('#totalAcres') };
+  if (desiredCropCount() < 1) return { ok:false, message:'Add at least one crop.', el:$('#cropCount') };
+  return { ok:true, message:'' };
+}
+function validateJourney() {
+  const setup = validateSetup();
+  if (!setup.ok) return setup;
+  const crops = getCropCards();
+  if (!crops.length) return { ok:false, message:'Add at least one crop before exporting.', el:$('#crops') };
+  let entries = 0;
+  for (const [ci, crop] of crops.entries()) {
+    const name = $('.crop-name', crop).value.trim();
+    const acres = num($('.crop-acres', crop).value);
+    if (!name) { setActiveCrop(ci); return { ok:false, message:'Add a crop name before exporting.', el:$('.crop-name', crop) }; }
+    if (acres <= 0) { setActiveCrop(ci); return { ok:false, message:`Add acres for ${name}.`, el:$('.crop-acres', crop) }; }
+    for (const row of $$('.ipm-row', crop)) {
+      row.classList.remove('needs-attention');
+      if (ipmComplete(row)) entries++;
+      else if (ipmStarted(row)) {
+        setActiveCrop(ci);
+        row.classList.add('needs-attention');
+        openApplication(row);
+        return { ok:false, message:`Finish the incomplete IPM application for ${name}: date, pest, product, amount/acre, and % active ingredient are required.`, el:row };
+      }
+    }
+  }
+  if (!entries) return { ok:false, message:'Add at least one complete IPM application before exporting.', el:$('#crops') };
+  return { ok:true, message:'' };
+}
+function goToCrops() {
+  const check = validateSetup();
+  if (!check.ok) { showSetupQA(check.message); check.el?.focus?.(); return; }
+  showSetupQA('');
+  syncCropCardsToCount();
+  $('#cropsBarTitle').textContent = ($('#farmName').value.trim() || 'Farm') + ' — Crops';
+  goTo('crops');
+  showCropQA('Add crop name and acres, then add IPM applications only when needed. Completed applications close automatically when you add another.');
+}
+function goToSummary() {
+  calculateAll();
+  const check = validateJourney();
+  if (!check.ok) {
+    showCropQA(check.message);
+    if (check.el) check.el.scrollIntoView({ behavior:'smooth', block:'center' });
+    return;
+  }
+  showCropQA('');
+  showSummaryQA('Ready. Export the CSV and save or send it as needed.');
+  goTo('summary');
+}
+
 function createIpmRow() {
   const row = $('#ipmTemplate').content.firstElementChild.cloneNode(true);
-  row.addEventListener('input', calculateAll);
-  row.addEventListener('change', calculateAll);
+  row.addEventListener('input', () => {
+    row.classList.remove('needs-attention');
+    showCropQA('');
+    refreshIpmTitles(row.closest('.crop-card'));
+    calculateAll();
+  });
+  row.addEventListener('change', () => {
+    row.classList.remove('needs-attention');
+    showCropQA('');
+    refreshIpmTitles(row.closest('.crop-card'));
+    calculateAll();
+  });
+  $('.edit-ipm', row).addEventListener('click', (ev) => { ev.stopPropagation(); openApplication(row); });
+  $('.ipm-summary', row).addEventListener('click', (ev) => {
+    if (ev.target.closest('button')) return;
+    row.classList.toggle('collapsed');
+  });
   $('.remove-ipm', row).addEventListener('click', () => {
     const crop = row.closest('.crop-card');
     row.remove();
     updateOptionalPanels(crop);
+    refreshIpmTitles(crop);
     calculateAll();
   });
   return row;
 }
 
 function addIpmEntry(crop) {
-  $('.ipm-body', crop).appendChild(createIpmRow());
+  const blank = $$('.ipm-row', crop).find(row => !ipmStarted(row));
+  if (blank) {
+    openApplication(blank);
+    showCropQA('Use the open blank application first, then add another.');
+    return;
+  }
+  collapseCompletedApplications(crop);
+  const row = createIpmRow();
+  $('.ipm-body', crop).appendChild(row);
+  openApplication(row);
   updateOptionalPanels(crop);
+  refreshIpmTitles(crop);
   calculateAll();
 }
 
@@ -659,8 +953,8 @@ function addCrop(name = '', acres = '') {
     setActiveCrop(activeCropIndex);
     calculateAll();
   });
-  crop.addEventListener('input', calculateAll);
-  crop.addEventListener('change', calculateAll);
+  crop.addEventListener('input', () => { refreshIpmTitles(crop); calculateAll(); });
+  crop.addEventListener('change', () => { refreshIpmTitles(crop); calculateAll(); });
   $('#crops').appendChild(crop);
   updateOptionalPanels(crop);
   setActiveCrop($$('.crop-card').length - 1);
@@ -715,6 +1009,7 @@ function calculateAll() {
     $('.crop-acres-stat', crop).textContent = fmt(cropAcres, 2);
     cropTiles.push({ cropName, cropAITotal, cropEntries });
     updateOptionalPanels(crop);
+    refreshIpmTitles(crop);
   });
 
   const remaining = totalAcres - cropAcresTotal;
@@ -745,6 +1040,9 @@ function csvEscape(value) {
 
 function exportCsv() {
   calculateAll();
+  const check = validateJourney();
+  if (!check.ok) { showSummaryQA(check.message); goTo('crops'); showCropQA(check.message); if (check.el) check.el.scrollIntoView({behavior:'smooth', block:'center'}); return; }
+  showSummaryQA('CSV downloaded.');
   const farmName = $('#farmName').value.trim();
   const state = $('#state').value;
   const totalAcres = $('#totalAcres').value;
@@ -795,6 +1093,8 @@ function goTo(name) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   const screen = document.getElementById('screen-' + name);
   if (screen) screen.classList.add('active');
+  window.scrollTo(0, 0);
+  setTimeout(postHeight, 60);
 }
 </script>
 </body>
