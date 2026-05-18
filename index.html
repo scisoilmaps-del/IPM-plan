@@ -1026,7 +1026,7 @@ thead {
 <div class="screen active" id="screen-home">
   <div class="home-content">
     <div class="feature-list">
-      <div class="feature-item"><div class="fi-icon">🏡</div><div class="fi-text"><div class="fi-head">Farm Setup</div><div class="fi-sub">Name, state, total acres, and crop count</div></div></div>
+      <div class="feature-item"><div class="fi-icon">🏡</div><div class="fi-text"><div class="fi-head">Farm Setup</div><div class="fi-sub">Name, state, total acres, total fields, and crop count</div></div></div>
       <div class="feature-item"><div class="fi-icon">🌱</div><div class="fi-text"><div class="fi-head">Crop-by-Crop Entry</div><div class="fi-sub">Add IPM inputs only for crops that need them</div></div></div>
       <div class="feature-item"><div class="fi-icon">🧪</div><div class="fi-text"><div class="fi-head">Active Ingredient Tracking</div><div class="fi-sub">Calculate AI per acre and totals in the background</div></div></div>
       <div class="feature-item"><div class="fi-icon">📥</div><div class="fi-text"><div class="fi-head">Export CSV</div><div class="fi-sub">Download a clean CSV record</div></div></div>
@@ -1056,6 +1056,7 @@ thead {
         <div class="field full"><label for="farmName">Farm Name</label><input id="farmName" placeholder="Example: ABC Farm" /></div>
         <div class="field"><label for="state">State</label><select id="state"><option value="">Select state</option><option>Alabama</option><option>Alaska</option><option>Arizona</option><option>Arkansas</option><option>California</option><option>Colorado</option><option>Connecticut</option><option>Delaware</option><option>Florida</option><option>Georgia</option><option>Hawaii</option><option>Idaho</option><option>Illinois</option><option>Indiana</option><option>Iowa</option><option>Kansas</option><option>Kentucky</option><option>Louisiana</option><option>Maine</option><option>Maryland</option><option>Massachusetts</option><option>Michigan</option><option>Minnesota</option><option>Mississippi</option><option>Missouri</option><option>Montana</option><option>Nebraska</option><option>Nevada</option><option>New Hampshire</option><option>New Jersey</option><option>New Mexico</option><option>New York</option><option>North Carolina</option><option>North Dakota</option><option>Ohio</option><option>Oklahoma</option><option>Oregon</option><option>Pennsylvania</option><option>Rhode Island</option><option>South Carolina</option><option>South Dakota</option><option>Tennessee</option><option>Texas</option><option>Utah</option><option>Vermont</option><option>Virginia</option><option>Washington</option><option>West Virginia</option><option>Wisconsin</option><option>Wyoming</option></select></div>
         <div class="field"><label for="totalAcres">Total Acres</label><input id="totalAcres" type="number" min="0" step="0.01" placeholder="0" inputmode="decimal" /></div>
+        <div class="field"><label for="totalFields">Total Fields</label><input id="totalFields" type="number" min="0" step="1" placeholder="0" inputmode="numeric" /></div>
         <div class="field"><label for="cropCount">Number of Crops</label><input id="cropCount" type="number" min="1" max="10" step="1" placeholder="" inputmode="numeric" /></div>
         <div class="field"><label for="preparedBy">Prepared By</label><input id="preparedBy" placeholder="Optional" /></div>
       </div>
@@ -1123,6 +1124,7 @@ thead {
     <div class="crop-head">
       <div class="field"><label>Crop Name</label><input class="crop-name" placeholder="Corn, soybeans, wheat..." /></div>
       <div class="field"><label>Crop Acres</label><input class="crop-acres" type="number" min="0" step="0.01" placeholder="0" /></div>
+      <div class="field"><label>Crop Fields</label><input class="crop-fields" type="number" min="0" step="1" placeholder="0" inputmode="numeric" /></div>
       <button class="btn danger remove-crop" type="button">Remove Crop</button>
     </div>
     <div class="crop-stats">
@@ -1130,6 +1132,7 @@ thead {
       <div class="stat"><div class="label">Total AI</div><div class="value crop-ai-total">0.00</div></div>
       <div class="stat"><div class="label">IPM Entries</div><div class="value crop-products">0</div></div>
       <div class="stat"><div class="label">Crop Acres</div><div class="value crop-acres-stat">0.00</div></div>
+      <div class="stat"><div class="label">Crop Fields</div><div class="value crop-fields-stat">0</div></div>
     </div>
 
     <div class="optional-bar">
@@ -1261,6 +1264,7 @@ function validateSetup() {
   if (!$('#farmName').value.trim()) return { ok:false, message:'Add the farm name before continuing.', el:$('#farmName') };
   if (!$('#state').value) return { ok:false, message:'Select the state before continuing.', el:$('#state') };
   if (num($('#totalAcres').value) <= 0) return { ok:false, message:'Add total farm acres before continuing.', el:$('#totalAcres') };
+  if (num($('#totalFields').value) <= 0) return { ok:false, message:'Add total fields before continuing.', el:$('#totalFields') };
   if (!$('#cropCount').value.trim() || desiredCropCount(false) < 1) return { ok:false, message:'Add the number of crops before continuing.', el:$('#cropCount') };
   return { ok:true, message:'' };
 }
@@ -1271,14 +1275,18 @@ function validateJourney() {
   if (!crops.length) return { ok:false, message:'Add at least one crop before exporting.', el:$('#crops') };
 
   const totalFarmAcres = num($('#totalAcres').value);
+  const totalFarmFields = Math.round(num($('#totalFields').value));
   let cropAcresTotal = 0;
+  let cropFieldsTotal = 0;
   let entries = 0;
 
   for (const [ci, crop] of crops.entries()) {
     const nameInput = $('.crop-name', crop);
     const acresInput = $('.crop-acres', crop);
+    const fieldsInput = $('.crop-fields', crop);
     const name = nameInput.value.trim();
     const acres = num(acresInput.value);
+    const fields = Math.round(num(fieldsInput.value));
 
     if (!name) {
       setActiveCrop(ci);
@@ -1288,7 +1296,12 @@ function validateJourney() {
       setActiveCrop(ci);
       return { ok:false, message:`Add crop acres for ${name}.`, el:acresInput };
     }
+    if (fields <= 0) {
+      setActiveCrop(ci);
+      return { ok:false, message:`Add crop fields for ${name}.`, el:fieldsInput };
+    }
     cropAcresTotal += acres;
+    cropFieldsTotal += fields;
   }
 
   const acreDifference = totalFarmAcres - cropAcresTotal;
@@ -1296,6 +1309,14 @@ function validateJourney() {
     const message = acreDifference > 0
       ? `${fmt(acreDifference, 2)} acres are still unassigned. Crop acres must equal total farm acres before export.`
       : `Crop acres exceed total farm acres by ${fmt(Math.abs(acreDifference), 2)} acres. Fix acres before export.`;
+    return { ok:false, message, el:$('#acreWarning') || $('#crops') };
+  }
+
+  const fieldDifference = totalFarmFields - cropFieldsTotal;
+  if (totalFarmFields > 0 && fieldDifference !== 0) {
+    const message = fieldDifference > 0
+      ? `${fieldDifference} fields are still unassigned. Crop fields must equal total fields before export.`
+      : `Crop fields exceed total fields by ${Math.abs(fieldDifference)}. Fix crop fields before export.`;
     return { ok:false, message, el:$('#acreWarning') || $('#crops') };
   }
 
@@ -1444,13 +1465,14 @@ function syncCropCardsToCount() {
   calculateAll();
 }
 
-function addCrop(name = '', acres = '') {
+function addCrop(name = '', acres = '', fields = '') {
   if ($$('.crop-card').length >= MAX_CROPS) return;
   cropCounter++;
   const crop = $('#cropTemplate').content.firstElementChild.cloneNode(true);
   crop.dataset.cropId = String(cropCounter);
   $('.crop-name', crop).value = name;
   $('.crop-acres', crop).value = acres;
+  $('.crop-fields', crop).value = fields;
   $$('.add-ipm, .add-ipm-panel', crop).forEach(btn => btn.addEventListener('click', () => addIpmEntry(crop)));
   $('.remove-crop', crop).addEventListener('click', () => {
     const removedIndex = $$('.crop-card').indexOf(crop);
@@ -1471,6 +1493,7 @@ function addCrop(name = '', acres = '') {
 function getIpmData(crop, row) {
   const cropName = $('.crop-name', crop).value.trim();
   const cropAcres = num($('.crop-acres', crop).value);
+  const cropFields = Math.round(num($('.crop-fields', crop).value));
   const applicationDate = $('.application-date', row).value;
   const pest = $('.pest', row).value.trim();
   const productName = $('.product-name', row).value.trim();
@@ -1482,12 +1505,14 @@ function getIpmData(crop, row) {
   const totalActiveIngredient = activeIngredientPerAcre * cropAcres;
   const notes = $('.notes', row).value.trim();
   const hasEntry = applicationDate || pest || productName || amountPerAcre > 0 || activePct > 0 || notes;
-  return { cropName, cropAcres, applicationDate, pest, productName, productUnit, amountPerAcre, activePct, activePctDecimal, activeIngredientPerAcre, totalActiveIngredient, notes, hasEntry };
+  return { cropName, cropAcres, cropFields, applicationDate, pest, productName, productUnit, amountPerAcre, activePct, activePctDecimal, activeIngredientPerAcre, totalActiveIngredient, notes, hasEntry };
 }
 
 function calculateAll() {
   const totalAcres = num($('#totalAcres').value);
+  const totalFields = Math.round(num($('#totalFields').value));
   let cropAcresTotal = 0;
+  let cropFieldsTotal = 0;
   let farmTotalAI = 0;
   let farmEntries = 0;
   const cropTiles = [];
@@ -1495,7 +1520,9 @@ function calculateAll() {
   $$('.crop-card').forEach((crop, idx) => {
     const cropName = $('.crop-name', crop).value.trim() || `Crop ${idx + 1}`;
     const cropAcres = num($('.crop-acres', crop).value);
+    const cropFields = Math.round(num($('.crop-fields', crop).value));
     cropAcresTotal += cropAcres;
+    cropFieldsTotal += cropFields;
     let cropAIperAcre = 0;
     let cropAITotal = 0;
     let cropEntries = 0;
@@ -1515,12 +1542,14 @@ function calculateAll() {
     $('.crop-ai-total', crop).textContent = fmt(cropAITotal, 4);
     $('.crop-products', crop).textContent = String(cropEntries);
     $('.crop-acres-stat', crop).textContent = fmt(cropAcres, 2);
+    $('.crop-fields-stat', crop).textContent = String(cropFields || 0);
     cropTiles.push({ cropName, cropAITotal, cropEntries });
     updateOptionalPanels(crop);
     refreshIpmTitles(crop);
   });
 
   const remaining = totalAcres - cropAcresTotal;
+  const remainingFields = totalFields - cropFieldsTotal;
   $('#sumCropAcres').textContent = fmt(cropAcresTotal, 2);
   $('#remainingAcres').textContent = fmt(remaining, 2);
   $('#farmEntries').textContent = String(farmEntries);
@@ -1530,6 +1559,11 @@ function calculateAll() {
     warning.textContent = remaining < 0
       ? `QA/QC: Crop acres exceed total farm acres by ${fmt(Math.abs(remaining), 2)} acres. Adjust crop acres before export.`
       : `QA/QC: ${fmt(remaining, 2)} acres remain unassigned. Crop acres must equal total farm acres before export.`;
+    warning.classList.remove('hidden');
+  } else if (totalFields > 0 && remainingFields !== 0) {
+    warning.textContent = remainingFields < 0
+      ? `QA/QC: Crop fields exceed total fields by ${Math.abs(remainingFields)}. Adjust crop fields before export.`
+      : `QA/QC: ${remainingFields} fields remain unassigned. Crop fields must equal total fields before export.`;
     warning.classList.remove('hidden');
   } else warning.classList.add('hidden');
   const tileWrap = $('#cropAITiles');
@@ -1554,6 +1588,7 @@ function renderSummary() {
   const state = $('#state').value;
   const preparedBy = $('#preparedBy').value.trim();
   const totalAcres = num($('#totalAcres').value);
+  const totalFields = Math.round(num($('#totalFields').value));
   const cropAcres = $('#sumCropAcres').textContent;
   const remaining = $('#remainingAcres').textContent;
   const entries = $('#farmEntries').textContent;
@@ -1567,6 +1602,7 @@ function renderSummary() {
     </div>
     <div class="summary-metrics">
       <div class="summary-metric"><div class="m-val">${totalAcres > 0 ? fmt(totalAcres, 2) : '—'}</div><div class="m-lbl">Total Acres</div></div>
+      <div class="summary-metric"><div class="m-val">${totalFields > 0 ? totalFields : '—'}</div><div class="m-lbl">Total Fields</div></div>
       <div class="summary-metric"><div class="m-val">${htmlEscape(cropAcres)}</div><div class="m-lbl">Crop Acres</div></div>
       <div class="summary-metric"><div class="m-val">${htmlEscape(remaining)}</div><div class="m-lbl">Remaining</div></div>
       <div class="summary-metric"><div class="m-val">${htmlEscape(entries)}</div><div class="m-lbl">IPM Entries</div></div>
@@ -1577,6 +1613,7 @@ function renderSummary() {
   $$('.crop-card').forEach((crop, ci) => {
     const cropName = $('.crop-name', crop).value.trim() || `Crop ${ci + 1}`;
     const acres = num($('.crop-acres', crop).value);
+    const fields = Math.round(num($('.crop-fields', crop).value));
     const aiAcre = $('.crop-ai-acre', crop).textContent;
     const totalAI = $('.crop-ai-total', crop).textContent;
     const cropEntries = $('.crop-products', crop).textContent;
@@ -1602,12 +1639,13 @@ function renderSummary() {
       <div class="crop-summary-card">
         <div class="crop-summary-head">
           <span class="csn">${htmlEscape(cropName)}</span>
-          <span class="csa">${acres ? fmt(acres, 2) + ' ac' : ''}</span>
+          <span class="csa">${acres ? fmt(acres, 2) + ' ac' : ''}${fields ? ' · ' + fields + ' fields' : ''}</span>
         </div>
         <div class="crop-summary-body">
           <div class="cs-stat"><div class="csv">${htmlEscape(aiAcre)}</div><div class="csl">AI / Acre</div></div>
           <div class="cs-stat"><div class="csv">${htmlEscape(totalAI)}</div><div class="csl">Total AI</div></div>
           <div class="cs-stat"><div class="csv">${htmlEscape(cropEntries)}</div><div class="csl">IPM Entries</div></div>
+          <div class="cs-stat"><div class="csv">${fields || 0}</div><div class="csl">Crop Fields</div></div>
         </div>
         ${rows ? `
         <div class="summary-table-wrap">
@@ -1637,10 +1675,13 @@ function exportCsv() {
   const farmName = $('#farmName').value.trim();
   const state = $('#state').value;
   const totalAcresNum = num($('#totalAcres').value);
+  const totalFieldsNum = Math.round(num($('#totalFields').value));
   const totalAcres = $('#totalAcres').value;
   const preparedBy = $('#preparedBy').value.trim();
   const cropAcresEntered = num($('#sumCropAcres').textContent);
+  const cropFieldsEntered = $$('.crop-card').reduce((sum, crop) => sum + Math.round(num($('.crop-fields', crop).value)), 0);
   const remainingAcres = totalAcresNum - cropAcresEntered;
+  const remainingFields = totalFieldsNum - cropFieldsEntered;
 
   let farmTotalAI = 0;
   let farmEntryCount = 0;
@@ -1660,8 +1701,11 @@ function exportCsv() {
     ['State', state],
     ['Prepared By', preparedBy],
     ['Total Farm Acres', totalAcres],
+    ['Total Fields', totalFieldsNum],
     ['Crop Acres Entered', fmt(cropAcresEntered, 2)],
+    ['Crop Fields Entered', cropFieldsEntered],
     ['Remaining Acres', fmt(remainingAcres, 2)],
+    ['Remaining Fields', remainingFields],
     ['Farm Total Active Ingredient', fmt(farmTotalAI, 4)],
     ['Farm Avg Active Ingredient/Acre', fmt(farmAvgAIPerAcre, 4)],
     ['Farm IPM Application Count', farmEntryCount],
@@ -1672,6 +1716,7 @@ function exportCsv() {
       'Input Category',
       'Crop Name',
       'Crop Acres',
+      'Crop Fields',
       'Application Date',
       'Weed Or Pest',
       'Product Name',
@@ -1688,6 +1733,7 @@ function exportCsv() {
   $$('.crop-card').forEach((crop, idx) => {
     const cropName = $('.crop-name', crop).value.trim() || `Crop ${idx + 1}`;
     const cropAcres = num($('.crop-acres', crop).value);
+    const cropFields = Math.round(num($('.crop-fields', crop).value));
     let addedRow = false;
 
     $$('.ipm-row', crop).forEach(row => {
@@ -1699,6 +1745,7 @@ function exportCsv() {
         'IPM Product',
         cropName,
         cropAcres,
+        cropFields,
         data.applicationDate,
         data.pest,
         data.productName,
@@ -1714,7 +1761,7 @@ function exportCsv() {
     });
 
     if (!addedRow && (cropName || cropAcres > 0)) {
-      rows.push([farmName, state, 'Crop With No IPM Entry', cropName, cropAcres, '', '', '', '', '', '', '', '', '', '']);
+      rows.push([farmName, state, 'Crop With No IPM Entry', cropName, cropAcres, cropFields, '', '', '', '', '', '', '', '', '', '']);
     }
   });
 
@@ -1747,7 +1794,7 @@ $('#nextCropBtn').addEventListener('click', () => setActiveCrop(activeCropIndex 
 $('#exportCsvBtn').addEventListener('click', exportCsv);
 const exportCsvTopBtn = $('#exportCsvTopBtn');
 if (exportCsvTopBtn) exportCsvTopBtn.addEventListener('click', exportCsv);
-['farmName', 'state', 'totalAcres', 'preparedBy'].forEach(id => {
+['farmName', 'state', 'totalAcres', 'totalFields', 'preparedBy'].forEach(id => {
   $(`#${id}`).addEventListener('input', calculateAll);
   $(`#${id}`).addEventListener('change', calculateAll);
 });
