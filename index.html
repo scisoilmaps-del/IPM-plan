@@ -369,8 +369,7 @@ td input, td select { min-height: 31px; padding: 5px 7px; border-radius: 8px; }
 .compact-summary .metric .label { font-size: 6.5px !important; letter-spacing: .05em !important; }
 .compact-summary .metric .value { font-size: 10px !important; }
 /* Hide calculated AI output columns in the working entry table. Values still calculate for CSV. */
-table th:nth-child(7), table th:nth-child(8),
-table td:nth-child(7), table td:nth-child(8) { display: none !important; }
+table th[data-hide], table td[data-hide] { display: none !important; }
 @media (max-width: 1100px) {
   tr.ipm-row {
     grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
@@ -685,7 +684,7 @@ thead {
 }
 .ipm-row {
   display: grid !important;
-  grid-template-columns: minmax(116px, .8fr) minmax(130px, 1fr) minmax(145px, 1fr) minmax(98px, .7fr) minmax(90px, .6fr) minmax(105px, .7fr) minmax(140px, 1fr) auto !important;
+  grid-template-columns: minmax(116px, .8fr) minmax(130px, 1fr) minmax(145px, 1fr) minmax(100px, .7fr) minmax(90px, .6fr) minmax(98px, .7fr) minmax(105px, .7fr) minmax(150px, 1fr) minmax(90px, .6fr) auto !important;
   gap: 5px !important;
   padding: 6px !important;
   margin-bottom: 5px !important;
@@ -759,9 +758,15 @@ thead {
   display: none !important;
 }
 /* Hide calculated AI fields in the entry view; they still calculate for CSV/export. */
-.ipm-row td:nth-child(8),
-.ipm-row td:nth-child(9) {
+.ipm-row td[data-label="Active Ingredient / Acre"],
+.ipm-row td[data-label="Total Active Ingredient"] {
   display: none !important;
+}
+/* Keep PRT fields visible */
+.ipm-row td[data-label="EPA Reg No"],
+.ipm-row td[data-label="Application Method"],
+.ipm-row td[data-label="Area Applied (acres)"] {
+  display: flex !important;
 }
 
 @media (max-width: 980px) {
@@ -1020,6 +1025,28 @@ thead {
   display: none !important;
 }
 
+/* PRT status badge */
+.prt-badge {
+  display: inline-block;
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+  padding: 2px 6px;
+  border-radius: 999px;
+  border: 1px solid currentColor;
+  line-height: 1.4;
+}
+.prt-badge.ready { color: var(--sci-leaf-deep); border-color: var(--sci-leaf-deep); background: #eaf3e8; }
+.prt-badge.missing { color: #8D3B1F; border-color: #8D3B1F; background: var(--warn-bg); }
+
+/* PRT export button accent */
+.btn.prt { background: var(--sci-clay); }
+
+/* Summary table extra cols */
+.summary-table { min-width: 1100px; }
+.prt-warn { color: #8D3B1F; font-size: 10px; font-weight: 800; }
+
 </style>
 </head>
 <body>
@@ -1029,7 +1056,7 @@ thead {
       <div class="feature-item"><div class="fi-icon">🏡</div><div class="fi-text"><div class="fi-head">Farm Setup</div><div class="fi-sub">Name, state, total acres, total fields, and crop count</div></div></div>
       <div class="feature-item"><div class="fi-icon">🌱</div><div class="fi-text"><div class="fi-head">Crop-by-Crop Entry</div><div class="fi-sub">Add IPM inputs only for crops that need them</div></div></div>
       <div class="feature-item"><div class="fi-icon">🧪</div><div class="fi-text"><div class="fi-head">Active Ingredient Tracking</div><div class="fi-sub">Calculate AI per acre and totals in the background</div></div></div>
-      <div class="feature-item"><div class="fi-icon">📥</div><div class="fi-text"><div class="fi-head">Export CSV</div><div class="fi-sub">Download a clean CSV record</div></div></div>
+      <div class="feature-item"><div class="fi-icon">📥</div><div class="fi-text"><div class="fi-head">Export CSV &amp; PRT File</div><div class="fi-sub">Download an SCI CSV or a PRT-ready spray records file for direct upload</div></div></div>
     </div>
     <button class="btn-primary" onclick="goTo('setup')">Get Started →</button>
   </div>
@@ -1098,6 +1125,7 @@ thead {
     <button class="back-btn" type="button" onclick="goTo('crops')">←</button>
     <span class="app-bar-title">Summary Report</span>
     <button class="app-bar-action" id="exportCsvTopBtn" type="button">Export CSV</button>
+    <button class="app-bar-action" id="exportPrtTopBtn" type="button" style="background:rgba(168,85,31,.7)">Export PRT</button>
   </div>
   <div class="step-bar">
     <div class="step-item done"><div class="step-dot"></div><span>Setup</span></div>
@@ -1109,7 +1137,8 @@ thead {
     <div id="summaryContent" class="summary-report-wrap"></div>
     <div class="summary-actions">
       <button class="btn ghost" type="button" onclick="goTo('crops')">← Edit Crops</button>
-      <button class="btn secondary" id="exportCsvBtn" type="button">Export CSV</button>
+      <button class="btn secondary" id="exportCsvBtn" type="button">Export SCI CSV</button>
+      <button class="btn prt" id="exportPrtBtn" type="button">Export PRT File</button>
     </div>
     <div class="hidden" id="sumCropAcres">0.00</div>
     <div class="hidden" id="remainingAcres">0.00</div>
@@ -1149,7 +1178,7 @@ thead {
         <table>
           <thead>
             <tr>
-              <th>Application Date</th><th style="width:170px">Weed or Pest</th><th style="width:170px">Product Name</th><th>Unit</th><th>Amount / Acre</th><th>% Active Ingredient<br><span class="th-note">type 41 for 41%</span></th><th>AI / Acre</th><th>Total AI</th><th>Notes</th><th></th>
+              <th>Application Date</th><th style="width:170px">Weed or Pest</th><th style="width:170px">Product Name</th><th>EPA Reg No*</th><th>Unit</th><th>Amount / Acre</th><th>% Active Ingredient<br><span class="th-note">type 41 for 41%</span></th><th>Application Method*</th><th>Area (acres)*</th><th>AI / Acre</th><th>Total AI</th><th>Notes</th><th></th>
             </tr>
           </thead>
           <tbody class="ipm-body"></tbody>
@@ -1161,13 +1190,16 @@ thead {
 
 <template id="ipmTemplate">
   <tr class="ipm-row">
-    <td class="ipm-summary-cell" colspan="10"><div class="ipm-summary"><div><div class="ipm-summary-title">New IPM Application</div><div class="ipm-summary-sub">Tap edit to open details</div></div><div class="ipm-summary-actions"><button class="btn ghost edit-ipm" type="button">Edit</button></div></div></td>
+    <td class="ipm-summary-cell" colspan="16"><div class="ipm-summary"><div><div class="ipm-summary-title">New IPM Application</div><div class="ipm-summary-sub">Tap edit to open details</div></div><div class="ipm-summary-actions"><button class="btn ghost edit-ipm" type="button">Edit</button></div></div></td>
     <td data-label="Application Date"><input class="application-date" type="date" /></td>
     <td data-label="Weed or Pest"><input class="pest" placeholder="Grass, broadleaf, insect..." /></td>
     <td data-label="Product Name"><input class="product-name" placeholder="Product name" /></td>
-    <td data-label="Unit"><select class="product-unit"><option>Fluid oz</option><option>Pints</option><option>Quarts</option><option>Gallons</option><option>oz</option><option>lbs</option><option>Tons</option></select></td>
+    <td data-label="EPA Reg No"><input class="epa-reg-no" placeholder="12345-678" /></td>
+    <td data-label="Unit"><select class="product-unit"><option value="lb/acre">lb/acre</option><option value="fl oz/acre">fl oz/acre</option><option value="oz/acre">oz/acre</option><option value="gal/acre">gal/acre</option><option value="pint/acre">pint/acre</option><option value="quart/acre">quart/acre</option><option value="dispensers/acre">dispensers/acre</option></select></td>
     <td data-label="Amount / Acre"><input class="amount-acre" type="number" min="0" step="0.001" placeholder="0" /></td>
     <td data-label="% Active Ingredient"><input class="active-pct" type="number" min="0" max="100" step="0.01" placeholder="41" inputmode="decimal" /></td>
+    <td data-label="Application Method"><select class="application-method"><option value="">Select method</option><option>Spray - foliar applied</option><option>Spray - soil applied</option><option>Spray - in furrow</option><option>Air Blast</option><option>Chemigation</option><option>Granular</option><option>Fumigation</option><option>Dust</option><option>Seed Treatment</option><option>Pheromone Dispenser</option><option>Bait</option><option>Post Harvest</option></select></td>
+    <td data-label="Area Applied (acres)"><input class="area-applied" type="number" min="0" step="0.01" placeholder="0" /></td>
     <td data-label="Active Ingredient / Acre" class="readonly ai-acre">0.00</td>
     <td data-label="Total Active Ingredient" class="readonly ai-total">0.00</td>
     <td data-label="Notes"><input class="notes" placeholder="Optional" /></td>
@@ -1210,7 +1242,7 @@ function showSetupQA(message) { showBox('#setupQa', message); }
 function showSummaryQA(message) { showBox('#summaryQa', message); }
 function ipmStarted(row) {
   if (!row) return false;
-  return !!($('.application-date', row).value || $('.pest', row).value.trim() || $('.product-name', row).value.trim() || num($('.amount-acre', row).value) > 0 || num($('.active-pct', row).value) > 0 || $('.notes', row).value.trim());
+  return !!($('.application-date', row).value || $('.pest', row).value.trim() || $('.product-name', row).value.trim() || num($('.amount-acre', row).value) > 0 || num($('.active-pct', row).value) > 0 || $('.notes', row).value.trim() || $('.epa-reg-no', row).value.trim() || $('.application-method', row).value);
 }
 function validActivePct(row) {
   const v = num($('.active-pct', row).value);
@@ -1229,6 +1261,30 @@ function ipmMissingMessage(row) {
   if (ai <= 0) missing.push('% active ingredient');
   if (ai > 100) missing.push('% active ingredient must be 100 or less');
   return missing.join(', ');
+}
+
+const EPA_REG_RE = /^\d{2,7}-\d{1,6}(-\d{1,6})?$/;
+
+function prtReadyCheck(row) {
+  const issues = [];
+  if (!$('.product-name', row).value.trim()) issues.push('Missing Product Name');
+  const epa = $('.epa-reg-no', row).value.trim();
+  if (!epa) {
+    issues.push('Missing EPA Reg No');
+  } else if (!EPA_REG_RE.test(epa)) {
+    issues.push('EPA Reg No format looks unusual. Example: 12345-678.');
+  }
+  if (num($('.amount-acre', row).value) <= 0) issues.push('Missing Application Rate');
+  if (!$('.product-unit', row).value) issues.push('Missing Unit');
+  if (!$('.application-date', row).value) issues.push('Missing Date');
+  if (!$('.application-method', row).value) issues.push('Missing Application Method');
+  const area = num($('.area-applied', row).value);
+  if (area <= 0) issues.push('Area Applied must be greater than 0');
+  return issues;
+}
+
+function prtComplete(row) {
+  return prtReadyCheck(row).length === 0;
 }
 function refreshIpmTitles(crop) {
   $$('.ipm-row', crop).forEach((row, i) => {
@@ -1367,8 +1423,10 @@ function goToSummary() {
   goTo('summary');
 }
 
-function createIpmRow() {
+function createIpmRow(cropAcresDefault) {
   const row = $('#ipmTemplate').content.firstElementChild.cloneNode(true);
+  // default area applied to crop acres
+  if (cropAcresDefault > 0) $('.area-applied', row).value = String(cropAcresDefault);
   row.addEventListener('input', () => {
     row.classList.remove('needs-attention');
     showCropQA('');
@@ -1406,7 +1464,8 @@ function addIpmEntry(crop) {
     return;
   }
   collapseCompletedApplications(crop);
-  const row = createIpmRow();
+  const cropAcresDefault = num($('.crop-acres', crop).value);
+  const row = createIpmRow(cropAcresDefault);
   $('.ipm-body', crop).appendChild(row);
   openApplication(row);
   updateOptionalPanels(crop);
@@ -1504,8 +1563,13 @@ function getIpmData(crop, row) {
   const activeIngredientPerAcre = amountPerAcre * activePctDecimal;
   const totalActiveIngredient = activeIngredientPerAcre * cropAcres;
   const notes = $('.notes', row).value.trim();
-  const hasEntry = applicationDate || pest || productName || amountPerAcre > 0 || activePct > 0 || notes;
-  return { cropName, cropAcres, cropFields, applicationDate, pest, productName, productUnit, amountPerAcre, activePct, activePctDecimal, activeIngredientPerAcre, totalActiveIngredient, notes, hasEntry };
+  // PRT fields
+  const epaRegNo = $('.epa-reg-no', row).value.trim();
+  const applicationMethod = $('.application-method', row).value;
+  const areaAppliedAcres = num($('.area-applied', row).value) || cropAcres;
+  const totalActiveIngredientApplied = activeIngredientPerAcre * areaAppliedAcres;
+  const hasEntry = applicationDate || pest || productName || amountPerAcre > 0 || activePct > 0 || notes || epaRegNo || applicationMethod;
+  return { cropName, cropAcres, cropFields, applicationDate, pest, productName, productUnit, amountPerAcre, activePct, activePctDecimal, activeIngredientPerAcre, totalActiveIngredient, totalActiveIngredientApplied, notes, epaRegNo, applicationMethod, areaAppliedAcres, hasEntry };
 }
 
 function calculateAll() {
@@ -1622,16 +1686,24 @@ function renderSummary() {
     $$('.ipm-row', crop).forEach(row => {
       const data = getIpmData(crop, row);
       if (!data.hasEntry) return;
+      const prtIssues = prtReadyCheck(row);
+      const prtBadge = prtIssues.length === 0
+        ? `<span class="prt-badge ready">PRT Ready</span>`
+        : `<span class="prt-badge missing" title="${prtIssues.join(', ')}">PRT: ${prtIssues[0]}</span>`;
       rows += `
         <tr>
           <td>${htmlEscape(data.applicationDate || '—')}</td>
           <td>${htmlEscape(data.pest || '—')}</td>
           <td>${htmlEscape(data.productName || '—')}</td>
+          <td>${htmlEscape(data.epaRegNo || '—')}</td>
           <td>${htmlEscape(data.productUnit || '—')}</td>
           <td>${fmt(data.amountPerAcre, 3)}</td>
           <td>${fmt(data.activePct, 2)}%</td>
           <td class="ai-val">${fmt(data.activeIngredientPerAcre, 4)}</td>
           <td class="ai-val">${fmt(data.totalActiveIngredient, 4)}</td>
+          <td>${htmlEscape(data.applicationMethod || '—')}</td>
+          <td>${fmt(data.areaAppliedAcres, 2)}</td>
+          <td>${prtBadge}</td>
         </tr>`;
     });
 
@@ -1650,7 +1722,7 @@ function renderSummary() {
         ${rows ? `
         <div class="summary-table-wrap">
           <table class="summary-table">
-            <thead><tr><th>Date</th><th>Weed or Pest</th><th>Product</th><th>Unit</th><th>Amount / Acre</th><th>% AI</th><th>AI / Acre</th><th>Total AI</th></tr></thead>
+            <thead><tr><th>Date</th><th>Weed or Pest</th><th>Product</th><th>EPA Reg No</th><th>Unit</th><th>Amount / Acre</th><th>% AI</th><th>AI / Acre</th><th>Total AI</th><th>App. Method</th><th>Area (ac)</th><th>PRT Status</th></tr></thead>
             <tbody>${rows}</tbody>
           </table>
         </div>` : '<div class="summary-empty">No IPM applications entered for this crop.</div>'}
@@ -1778,6 +1850,73 @@ function exportCsv() {
   URL.revokeObjectURL(url);
 }
 
+const PRT_HEADERS = [
+  'Block Name',
+  'Product Name*',
+  'EPA Reg No*',
+  'Application Rate*',
+  'Unit (e.g. gal/ac)*',
+  'Date*',
+  'Application method*',
+  'Area applied (in acres)*'
+];
+
+function exportPRT() {
+  calculateAll();
+  const farmName = $('#farmName').value.trim();
+
+  // Collect all PRT-valid rows; warn on any that are incomplete
+  const prtRows = [];
+  const warnings = [];
+
+  $$('.crop-card').forEach((crop, ci) => {
+    $$('.ipm-row', crop).forEach(row => {
+      const data = getIpmData(crop, row);
+      if (!data.hasEntry) return;
+      const issues = prtReadyCheck(row);
+      if (issues.length > 0) {
+        const cropName = data.cropName || `Crop ${ci + 1}`;
+        warnings.push(`${cropName} / ${data.productName || 'unnamed'}: ${issues.join(', ')}`);
+      } else {
+        prtRows.push([
+          data.cropName,
+          data.productName,
+          data.epaRegNo,
+          data.amountPerAcre,
+          data.productUnit,
+          data.applicationDate,
+          data.applicationMethod,
+          data.areaAppliedAcres
+        ]);
+      }
+    });
+  });
+
+  if (warnings.length > 0 && prtRows.length === 0) {
+    showSummaryQA('No PRT-ready records found. Fix missing fields: ' + warnings.slice(0, 2).join('; ') + (warnings.length > 2 ? ` … and ${warnings.length - 2} more` : '') + '.');
+    return;
+  }
+
+  if (warnings.length > 0) {
+    showSummaryQA(`Exported ${prtRows.length} PRT record(s). Skipped ${warnings.length} incomplete: ${warnings[0]}${warnings.length > 1 ? ` …` : ''}`);
+  } else {
+    showSummaryQA(`PRT file downloaded — ${prtRows.length} record(s).`);
+  }
+
+  const allRows = [PRT_HEADERS, ...prtRows];
+  const csv = allRows.map(row => row.map(csvEscape).join(',')).join('\n');
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  const safeName = (farmName || 'ipm_prt').replace(/[^a-z0-9-_]+/gi, '_').replace(/^_+|_+$/g, '');
+  a.href = url;
+  a.download = `${safeName || 'ipm_prt'}_prt_spray_records.csv`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
 $('#cropCount' ).addEventListener('change', syncCropCardsToCount);
 $('#cropCount').addEventListener('input', () => { if ($('#cropCount').value.trim()) syncCropCardsToCount(); });
 const addCropBtn = $('#addCropBtn');
@@ -1794,6 +1933,10 @@ $('#nextCropBtn').addEventListener('click', () => setActiveCrop(activeCropIndex 
 $('#exportCsvBtn').addEventListener('click', exportCsv);
 const exportCsvTopBtn = $('#exportCsvTopBtn');
 if (exportCsvTopBtn) exportCsvTopBtn.addEventListener('click', exportCsv);
+const exportPrtBtn = $('#exportPrtBtn');
+if (exportPrtBtn) exportPrtBtn.addEventListener('click', exportPRT);
+const exportPrtTopBtn = $('#exportPrtTopBtn');
+if (exportPrtTopBtn) exportPrtTopBtn.addEventListener('click', exportPRT);
 ['farmName', 'state', 'totalAcres', 'totalFields', 'preparedBy'].forEach(id => {
   $(`#${id}`).addEventListener('input', calculateAll);
   $(`#${id}`).addEventListener('change', calculateAll);
