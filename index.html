@@ -145,6 +145,22 @@ input:focus, select:focus, textarea:focus { border-color: var(--sci-clay); box-s
   font-weight: 800;
   white-space: nowrap;
 }
+
+.ipm-guidance-caption {
+  border: 1.5px solid #FDBA74;
+  background: #FFF7ED;
+  color: var(--sci-earth);
+  border-radius: 14px;
+  padding: 10px 14px;
+  margin: 0 0 10px;
+  font-size: 13px;
+  line-height: 1.35;
+}
+.ipm-guidance-caption strong {
+  color: var(--sci-clay);
+  font-weight: 900;
+}
+
 .note {
   border-left: 4px solid var(--sci-clay);
   background: var(--warn-bg);
@@ -1047,6 +1063,61 @@ thead {
 .summary-table { min-width: 1100px; }
 .prt-warn { color: #8D3B1F; font-size: 10px; font-weight: 800; }
 
+
+/* Safer entry actions: primary completion, deletion de-emphasized */
+.app-bar-action:disabled,
+#summaryBottomBtn:disabled {
+  opacity: .42 !important;
+  cursor: not-allowed !important;
+  filter: grayscale(.25);
+}
+.entry-bottom-actions {
+  position: sticky;
+  bottom: 0;
+  z-index: 18;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 8px;
+  align-items: center;
+  padding: 9px;
+  margin-top: 8px;
+  border: 1px solid var(--sci-line);
+  border-radius: 12px;
+  background: rgba(251,248,241,.96);
+  box-shadow: 0 -4px 14px rgba(61,47,30,.08);
+}
+.entry-bottom-help {
+  grid-column: 1 / -1;
+  color: var(--sci-muted);
+  font-size: 11px;
+  font-weight: 700;
+  text-align: center;
+}
+.entry-bottom-help.unlocked { color: var(--sci-leaf-deep); }
+.entry-actions-cell {
+  display: grid !important;
+  grid-template-columns: 1fr auto;
+  gap: 6px;
+  align-items: end;
+}
+.danger-text {
+  color: #8D3B1F !important;
+  border-color: #D8B9A8 !important;
+  background: #fff !important;
+}
+.complete-ipm {
+  background: var(--sci-leaf-deep) !important;
+}
+@media (max-width: 980px) {
+  .ipm-row td[data-label="Entry Actions"] { grid-column: 1 / -1 !important; }
+  .entry-actions-cell { grid-template-columns: 1fr !important; }
+  .remove-ipm { width: 100% !important; }
+}
+@media (max-width: 620px) {
+  .entry-bottom-actions { grid-template-columns: 1fr !important; padding: 7px; gap: 6px; }
+  .entry-bottom-help { font-size: 10px; }
+}
+
 </style>
 </head>
 <body>
@@ -1088,6 +1159,7 @@ thead {
         <div class="field"><label for="preparedBy">Prepared By</label><input id="preparedBy" placeholder="Optional" /></div>
       </div>
     </section>
+    <div class="ipm-guidance-caption"><strong>IPM entry guidance:</strong> Enter each crop once, then add IPM applications under the crop that received them. If the same crop has different IPM programs, enter each system as its own crop count and title. Example: <em>Corn — Herbicide Program A</em> and <em>Corn — Herbicide Program B</em>. This keeps crop and IPM assignments clear without changing the tool logic.</div>
     <button class="btn-primary" type="button" onclick="goToCrops()">Continue to Crops →</button>
   </div>
 </div>
@@ -1096,7 +1168,7 @@ thead {
   <div class="app-bar">
     <button class="back-btn" type="button" onclick="goTo('setup')">←</button>
     <span class="app-bar-title" id="cropsBarTitle">Crops</span>
-    <button class="app-bar-action" type="button" onclick="goToSummary()">Summary →</button>
+    <button class="app-bar-action" id="summaryTopBtn" type="button" onclick="goToSummary()" disabled title="Add at least one complete IPM entry first">Summary →</button>
   </div>
   <div class="step-bar">
     <div class="step-item done"><div class="step-dot"></div><span>Setup</span></div>
@@ -1117,6 +1189,11 @@ thead {
       </div>
       <main id="crops"></main>
     </section>
+    <div class="entry-bottom-actions" aria-label="Entry completion actions">
+      <button class="btn" id="completeEntryBtn" type="button">Complete Current Entry</button>
+      <button class="btn secondary" id="summaryBottomBtn" type="button" onclick="goToSummary()" disabled title="Add at least one complete IPM entry first">Go to Summary →</button>
+      <div class="entry-bottom-help" id="summaryLockHelp">Add and complete at least one IPM entry to unlock Summary.</div>
+    </div>
   </div>
 </div>
 
@@ -1203,7 +1280,7 @@ thead {
     <td data-label="Active Ingredient / Acre" class="readonly ai-acre">0.00</td>
     <td data-label="Total Active Ingredient" class="readonly ai-total">0.00</td>
     <td data-label="Notes"><input class="notes" placeholder="Optional" /></td>
-    <td data-label="Remove"><button class="btn danger remove-ipm" type="button">Remove Entry</button></td>
+    <td data-label="Entry Actions" class="entry-actions-cell"><button class="btn complete-ipm" type="button">Complete Entry</button><button class="btn ghost danger-text remove-ipm" type="button">Delete Entry</button></td>
   </tr>
 </template>
 
@@ -1423,6 +1500,64 @@ function goToSummary() {
   goTo('summary');
 }
 
+
+function getCompleteIpmCount() {
+  let count = 0;
+  $$('.ipm-row').forEach(row => { if (ipmComplete(row)) count++; });
+  return count;
+}
+
+function updateSummaryLocks() {
+  const completeCount = getCompleteIpmCount();
+  const unlocked = completeCount > 0;
+  ['summaryTopBtn', 'summaryBottomBtn'].forEach(id => {
+    const btn = $('#' + id);
+    if (!btn) return;
+    btn.disabled = !unlocked;
+    btn.title = unlocked ? 'Go to Summary' : 'Add at least one complete IPM entry first';
+  });
+  const help = $('#summaryLockHelp');
+  if (help) {
+    help.textContent = unlocked
+      ? `${completeCount} complete IPM entr${completeCount === 1 ? 'y' : 'ies'} added. Summary is unlocked.`
+      : 'Add and complete at least one IPM entry to unlock Summary.';
+    help.classList.toggle('unlocked', unlocked);
+  }
+}
+
+function completeIpmRow(row) {
+  if (!row) {
+    showCropQA('Add an IPM entry first, then use Complete Entry.');
+    return false;
+  }
+  row.classList.remove('needs-attention');
+  if (!ipmStarted(row)) {
+    row.classList.add('needs-attention');
+    openApplication(row);
+    showCropQA('Fill out the IPM application before completing it.');
+    return false;
+  }
+  if (!ipmComplete(row)) {
+    row.classList.add('needs-attention');
+    openApplication(row);
+    showCropQA('Finish this IPM application before completing it. Missing: ' + ipmMissingMessage(row) + '.');
+    return false;
+  }
+  row.classList.add('collapsed');
+  showCropQA('Entry completed. You can add another entry or go to Summary.');
+  calculateAll();
+  return true;
+}
+
+function completeCurrentEntry() {
+  const crop = getCropCards()[activeCropIndex];
+  if (!crop) { showCropQA('Add a crop first.'); return; }
+  const rows = $$('.ipm-row', crop);
+  if (!rows.length) { showCropQA('Add an IPM entry first, then use Complete Entry.'); return; }
+  const openRow = rows.find(row => !row.classList.contains('collapsed')) || rows[rows.length - 1];
+  completeIpmRow(openRow);
+}
+
 function createIpmRow(cropAcresDefault) {
   const row = $('#ipmTemplate').content.firstElementChild.cloneNode(true);
   // default area applied to crop acres
@@ -1442,12 +1577,15 @@ function createIpmRow(cropAcresDefault) {
     calculateAll();
   });
   $('.edit-ipm', row).addEventListener('click', (ev) => { ev.stopPropagation(); openApplication(row); });
+  $('.complete-ipm', row).addEventListener('click', () => completeIpmRow(row));
   $('.ipm-summary', row).addEventListener('click', (ev) => {
     if (ev.target.closest('button')) return;
     row.classList.toggle('collapsed');
   });
   $('.remove-ipm', row).addEventListener('click', () => {
     const crop = row.closest('.crop-card');
+    const hasWork = ipmStarted(row);
+    if (hasWork && !confirm('Delete this IPM entry and all information entered in it?')) return;
     row.remove();
     updateOptionalPanels(crop);
     refreshIpmTitles(crop);
@@ -1638,6 +1776,7 @@ function calculateAll() {
     el.textContent = `${tile.cropName}: ${fmt(tile.cropAITotal, 2)} AI · ${tile.cropEntries} entries`;
     tileWrap.appendChild(el);
   });
+  updateSummaryLocks();
   renderCropNavigation();
 }
 
@@ -1930,6 +2069,8 @@ if (addCropBtn) {
 }
 $('#prevCropBtn').addEventListener('click', () => setActiveCrop(activeCropIndex - 1));
 $('#nextCropBtn').addEventListener('click', () => setActiveCrop(activeCropIndex + 1));
+const completeEntryBtn = $('#completeEntryBtn');
+if (completeEntryBtn) completeEntryBtn.addEventListener('click', completeCurrentEntry);
 $('#exportCsvBtn').addEventListener('click', exportCsv);
 const exportCsvTopBtn = $('#exportCsvTopBtn');
 if (exportCsvTopBtn) exportCsvTopBtn.addEventListener('click', exportCsv);
@@ -1942,6 +2083,7 @@ if (exportPrtTopBtn) exportPrtTopBtn.addEventListener('click', exportPRT);
   $(`#${id}`).addEventListener('change', calculateAll);
 });
 setActiveCrop(0);
+updateSummaryLocks();
 function goTo(name) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   const screen = document.getElementById('screen-' + name);
