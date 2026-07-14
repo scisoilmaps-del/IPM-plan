@@ -1255,7 +1255,7 @@ thead {
         <table>
           <thead>
             <tr>
-              <th>Application Date</th><th style="width:170px">Weed or Pest</th><th style="width:170px">Product Name</th><th>EPA Reg No*</th><th>Unit</th><th>Amount / Acre</th><th>% Active Ingredient<br><span class="th-note">type 41 for 41%</span></th><th>Application Method*</th><th>Area (acres)*</th><th>AI / Acre</th><th>Total AI</th><th>Notes</th><th></th>
+              <th>Application Date</th><th style="width:170px">Weed or Pest</th><th style="width:170px">Product Name</th><th>Product Label Category*</th><th>Restricted Use Pesticide?*</th><th>EPA Reg No*</th><th>Unit</th><th>Amount / Acre</th><th>% Active Ingredient<br><span class="th-note">type 41 for 41%</span></th><th>Application Method*</th><th>Area (acres)*</th><th>AI / Acre</th><th>Total AI</th><th>Notes</th><th></th>
             </tr>
           </thead>
           <tbody class="ipm-body"></tbody>
@@ -1267,10 +1267,12 @@ thead {
 
 <template id="ipmTemplate">
   <tr class="ipm-row">
-    <td class="ipm-summary-cell" colspan="16"><div class="ipm-summary"><div><div class="ipm-summary-title">New IPM Application</div><div class="ipm-summary-sub">Tap edit to open details</div></div><div class="ipm-summary-actions"><button class="btn ghost edit-ipm" type="button">Edit</button></div></div></td>
+    <td class="ipm-summary-cell" colspan="15"><div class="ipm-summary"><div><div class="ipm-summary-title">New IPM Application</div><div class="ipm-summary-sub">Tap edit to open details</div></div><div class="ipm-summary-actions"><button class="btn ghost edit-ipm" type="button">Edit</button></div></div></td>
     <td data-label="Application Date"><input class="application-date" type="date" /></td>
     <td data-label="Weed or Pest"><input class="pest" placeholder="Grass, broadleaf, insect..." /></td>
     <td data-label="Product Name"><input class="product-name" placeholder="Product name" /></td>
+    <td data-label="Product Label Category"><select class="label-category"><option value="">Select label category</option><option>Restricted Use Pesticides (RUPs)</option><option>DANGER/POISON label products</option><option>DANGER label products</option><option>WARNING label products</option><option>CAUTION label products</option></select></td>
+    <td data-label="Restricted Use Pesticide"><select class="rup-status"><option value="">Select yes or no</option><option value="Yes">Yes</option><option value="No">No</option></select></td>
     <td data-label="EPA Reg No"><input class="epa-reg-no" placeholder="12345-678" /></td>
     <td data-label="Unit"><select class="product-unit"><option value="lb/acre">lb/acre</option><option value="fl oz/acre">fl oz/acre</option><option value="oz/acre">oz/acre</option><option value="gal/acre">gal/acre</option><option value="pint/acre">pint/acre</option><option value="quart/acre">quart/acre</option><option value="dispensers/acre">dispensers/acre</option></select></td>
     <td data-label="Amount / Acre"><input class="amount-acre" type="number" min="0" step="0.001" placeholder="0" /></td>
@@ -1319,20 +1321,22 @@ function showSetupQA(message) { showBox('#setupQa', message); }
 function showSummaryQA(message) { showBox('#summaryQa', message); }
 function ipmStarted(row) {
   if (!row) return false;
-  return !!($('.application-date', row).value || $('.pest', row).value.trim() || $('.product-name', row).value.trim() || num($('.amount-acre', row).value) > 0 || num($('.active-pct', row).value) > 0 || $('.notes', row).value.trim() || $('.epa-reg-no', row).value.trim() || $('.application-method', row).value);
+  return !!($('.application-date', row).value || $('.pest', row).value.trim() || $('.product-name', row).value.trim() || $('.label-category', row).value || $('.rup-status', row).value || num($('.amount-acre', row).value) > 0 || num($('.active-pct', row).value) > 0 || $('.notes', row).value.trim() || $('.epa-reg-no', row).value.trim() || $('.application-method', row).value);
 }
 function validActivePct(row) {
   const v = num($('.active-pct', row).value);
   return v > 0 && v <= 100;
 }
 function ipmComplete(row) {
-  return !!($('.application-date', row).value && $('.pest', row).value.trim() && $('.product-name', row).value.trim() && num($('.amount-acre', row).value) > 0 && validActivePct(row));
+  return !!($('.application-date', row).value && $('.pest', row).value.trim() && $('.product-name', row).value.trim() && $('.label-category', row).value && $('.rup-status', row).value && num($('.amount-acre', row).value) > 0 && validActivePct(row));
 }
 function ipmMissingMessage(row) {
   const missing = [];
   if (!$('.application-date', row).value) missing.push('application date');
   if (!$('.pest', row).value.trim()) missing.push('weed or pest');
   if (!$('.product-name', row).value.trim()) missing.push('product name');
+  if (!$('.label-category', row).value) missing.push('product label category');
+  if (!$('.rup-status', row).value) missing.push('restricted use pesticide status');
   if (num($('.amount-acre', row).value) <= 0) missing.push('amount/acre');
   const ai = num($('.active-pct', row).value);
   if (ai <= 0) missing.push('% active ingredient');
@@ -1694,6 +1698,8 @@ function getIpmData(crop, row) {
   const applicationDate = $('.application-date', row).value;
   const pest = $('.pest', row).value.trim();
   const productName = $('.product-name', row).value.trim();
+  const labelCategory = $('.label-category', row).value;
+  const rupStatus = $('.rup-status', row).value;
   const productUnit = $('.product-unit', row).value;
   const amountPerAcre = num($('.amount-acre', row).value);
   const activePct = clampPct($('.active-pct', row).value);
@@ -1706,8 +1712,8 @@ function getIpmData(crop, row) {
   const applicationMethod = $('.application-method', row).value;
   const areaAppliedAcres = num($('.area-applied', row).value) || cropAcres;
   const totalActiveIngredientApplied = activeIngredientPerAcre * areaAppliedAcres;
-  const hasEntry = applicationDate || pest || productName || amountPerAcre > 0 || activePct > 0 || notes || epaRegNo || applicationMethod;
-  return { cropName, cropAcres, cropFields, applicationDate, pest, productName, productUnit, amountPerAcre, activePct, activePctDecimal, activeIngredientPerAcre, totalActiveIngredient, totalActiveIngredientApplied, notes, epaRegNo, applicationMethod, areaAppliedAcres, hasEntry };
+  const hasEntry = applicationDate || pest || productName || labelCategory || rupStatus || amountPerAcre > 0 || activePct > 0 || notes || epaRegNo || applicationMethod;
+  return { cropName, cropAcres, cropFields, applicationDate, pest, productName, labelCategory, rupStatus, productUnit, amountPerAcre, activePct, activePctDecimal, activeIngredientPerAcre, totalActiveIngredient, totalActiveIngredientApplied, notes, epaRegNo, applicationMethod, areaAppliedAcres, hasEntry };
 }
 
 function calculateAll() {
@@ -1834,6 +1840,8 @@ function renderSummary() {
           <td>${htmlEscape(data.applicationDate || '—')}</td>
           <td>${htmlEscape(data.pest || '—')}</td>
           <td>${htmlEscape(data.productName || '—')}</td>
+          <td>${htmlEscape(data.labelCategory || '—')}</td>
+          <td>${htmlEscape(data.rupStatus || '—')}</td>
           <td>${htmlEscape(data.epaRegNo || '—')}</td>
           <td>${htmlEscape(data.productUnit || '—')}</td>
           <td>${fmt(data.amountPerAcre, 3)}</td>
@@ -1861,7 +1869,7 @@ function renderSummary() {
         ${rows ? `
         <div class="summary-table-wrap">
           <table class="summary-table">
-            <thead><tr><th>Date</th><th>Weed or Pest</th><th>Product</th><th>EPA Reg No</th><th>Unit</th><th>Amount / Acre</th><th>% AI</th><th>AI / Acre</th><th>Total AI</th><th>App. Method</th><th>Area (ac)</th><th>PRT Status</th></tr></thead>
+            <thead><tr><th>Date</th><th>Weed or Pest</th><th>Product</th><th>Label Category</th><th>RUP?</th><th>EPA Reg No</th><th>Unit</th><th>Amount / Acre</th><th>% AI</th><th>AI / Acre</th><th>Total AI</th><th>App. Method</th><th>Area (ac)</th><th>PRT Status</th></tr></thead>
             <tbody>${rows}</tbody>
           </table>
         </div>` : '<div class="summary-empty">No IPM applications entered for this crop.</div>'}
@@ -1931,6 +1939,8 @@ function exportCsv() {
       'Application Date',
       'Weed Or Pest',
       'Product Name',
+      'Product Label Category',
+      'Restricted Use Pesticide Status',
       'Rate Per Acre',
       'Unit',
       'Percent Active Ingredient',
@@ -1960,6 +1970,8 @@ function exportCsv() {
         data.applicationDate,
         data.pest,
         data.productName,
+        data.labelCategory,
+        data.rupStatus,
         data.amountPerAcre,
         data.productUnit,
         data.activePct,
@@ -1972,7 +1984,7 @@ function exportCsv() {
     });
 
     if (!addedRow && (cropName || cropAcres > 0)) {
-      rows.push([farmName, state, 'Crop With No IPM Entry', cropName, cropAcres, cropFields, '', '', '', '', '', '', '', '', '', '']);
+      rows.push([farmName, state, 'Crop With No IPM Entry', cropName, cropAcres, cropFields, '', '', '', '', '', '', '', '', '', '', '', '']);
     }
   });
 
