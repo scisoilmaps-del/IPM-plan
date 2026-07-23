@@ -1758,6 +1758,8 @@ function goToCrops() {
   if (!check.ok) { showSetupQA(check.message); check.el?.focus?.(); return; }
   showSetupQA('');
   syncCropCardsToCount();
+  // Always begin the crop/IPM section on Crop 1 after setup, even when multiple crops were created.
+  setActiveCrop(0);
   $('#cropsBarTitle').textContent = ($('#farmName').value.trim() || 'Farm') + ' — Crops';
   goTo('crops');
   showCropQA('');
